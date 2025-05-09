@@ -1,0 +1,76 @@
+[app]
+name = 'star-mall'
+port = 8080
+env = 'dev'
+debug = true
+varsion = 'v0.1'
+sessionon = true
+sessiongcmaxlifetime = 3600
+session_name = 'star-mall'
+
+[database]
+[database.mysql]
+master_host = 'host'
+master_port = 13306
+user = 'dg'
+password = '123456'
+db_name = 'shop'
+max_open_conns = 100
+max_idle_conns = 20
+timeout = 10
+
+[[database.mysql.slaves]]
+host = 'host'
+port = 23306
+
+[[database.mysql.slaves]]
+host = 'host'
+port = 33306
+
+[database.redis]
+master_host = 'host'
+master_port = 16379
+password = '123456'
+
+[[database.redis.slaves]]
+host = 'host'
+port = 26379
+
+[[database.redis.slaves]]
+host = 'host'
+port = 36379
+
+[mail]
+user = "username@foxmail.com"
+SMTP-code = "fsjrvxgzxyoqddhf"
+host = "smtp.qq.com"
+port = 465
+from = "username@foxmail.com"
+
+[cookie]
+name = "star-mall"
+domain = "StarMall.com"
+path = "/"
+maxAge = 3600
+secure = false
+httpOnly = true
+sameSite = "Strict"
+
+[log]
+version = "v0.1"
+level = "dev"
+path = "/var/log/star-Mall/"
+max_size = 100
+max_backup = 5
+max_age = 30
+compress = false
+
+[etcd]
+endpoints = ["host1:2379", "host2:2379", "host3:2379"]
+#username = "root"
+#password = "123456"
+dial_timeout = "5s"
+auto_sync_interval = "5m"
+max_call_send_msg_size = 52428800
+max_call_recv_msg_size = 52428800
+enable_tls = false
