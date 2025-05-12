@@ -15,6 +15,7 @@ type Config struct {
 	Mail     MailConf
 	Cookie   CookieConf
 	Etcd     EtcdConf
+	TLS      TLSConfig
 }
 
 type AppConfig struct {
@@ -102,10 +103,32 @@ type EtcdConf struct {
 }
 
 type TLSConfig struct {
-	CAFile             string `mapstructure:"ca_file"`
-	CertFile           string `mapstructure:"cert_file"`
-	KeyFile            string `mapstructure:"key_file"`
-	InsecureSkipVerify bool   `mapstructure:"insecure_skip_verify"`
+	Server        ServerConfig
+	Client        ClientConfig
+	Cipher_suites CipherSuitesConfig
+	Advanced      AdvancedConfig
+}
+
+type ServerConfig struct {
+	CertFile    string `mapstructure:"cert_file"`    // PEM格式服务端证书文件路径（与PfxFile互斥）
+	KeyFile     string `mapstructure:"key_file"`     // PEM格式服务端私钥文件路径
+	ClientAuth  int    `mapstructure:"client_auth"`  // 是否启用客户端证书验证（双向认证）
+	MinVersion  string `mapstructure:"min_version"`  // 最低支持的TLS协议版本（如"TLS1.2"）
+	PfxFile     string `mapstructure:"pfx_file"`     // PKCS12格式证书文件路径（替代CertFile+KeyFile）
+	PfxPassword string `mapstructure:"pfx_password"` // PKCS12文件的解密密码
+}
+
+type ClientConfig struct {
+	CaCertFile string `mapstructure:"ca_cert_file"` // CA证书路径，用于验证服务端证书合法性
+}
+
+type CipherSuitesConfig struct {
+	Suites []string `mapstructure:"suites"` // 启用的加密套件列表（如TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256）
+}
+
+type AdvancedConfig struct {
+	SessionTickets   bool     `mapstructure:"session_tickets"`   // 是否启用会话票据复用以提升性能
+	CurvePreferences []string `mapstructure:"curve_preferences"` // 椭圆曲线优先级（如"X25519"、"P-256"）
 }
 
 var c Config
