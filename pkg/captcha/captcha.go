@@ -1,4 +1,4 @@
-package model
+package captcha
 
 import (
 	log "github.com/star-find-cloud/star-mall/pkg/logger"

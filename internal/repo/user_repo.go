@@ -1,0 +1,14 @@
+package repo
+
+import (
+	"context"
+	"github.com/star-find-cloud/star-mall/model"
+)
+
+type UserRepository interface {
+	Creat(ctx context.Context, user *model.User) error
+	GetByID(ctx context.Context, id int) (*model.User, error)
+	Update(ctx context.Context, user *model.User) error
+	UpdatePasswd(ctx context.Context, user *model.User) error
+	Delete(ctx context.Context, id int) error
+}

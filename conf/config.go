@@ -138,7 +138,7 @@ func init() {
 	viper.SetConfigType("toml")
 	viper.AddConfigPath(".")
 
-	logFile, err := os.OpenFile("E:/var/log/StarMall/conf.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+	logFile, err := os.OpenFile("E:/var/log/star-Mall/conf.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
 		log.Println(err)
 	}

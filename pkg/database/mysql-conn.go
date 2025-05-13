@@ -57,7 +57,7 @@ func init() {
 	master._db = m_db
 }
 
-func GetMySQLMaster() *sqlx.DB {
+func GetDB() *sqlx.DB {
 	return master._db
 }
 
