@@ -3,25 +3,27 @@ package main
 import (
 	"fmt"
 	"github.com/star-find-cloud/star-mall/conf"
-	appTLS "github.com/star-find-cloud/star-mall/pkg/tls"
 )
 
 func main() {
-	//mysqlSlaves := db.GetMySQLSlaves()
-	//mysqlMaster := pkg.GetMasterDB()
-	//fmt.Println(mysqlSlaves)
-
-	//err := mail.SendVerificationCode("3223590891@qq.com", mail.GenerateCode())
-	//if err != nil {
-	//	fmt.Println(err)
+	//r := gin.Default()
+	//r.GET("/", func(c *gin.Context) {
+	//	c.JSON(http.StatusOK, gin.H{
+	//		"message": "欢迎使用star mall",
+	//	})
+	//})
+	//
+	//authGroup := r.Group("/login")
+	//{
+	//	authGroup.POST("/login/id", loginByID)
+	//	authGroup.POST("/login/email", loginByEmail)
 	//}
-
-	var c = conf.GetConfig()
-	fmt.Println(c.TLS)
-
-	tls, err := appTLS.GetTLS()
-	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Println(tls)
+	//
+	//err := r.Run(":8080")
+	//if err != nil {
+	//	fmt.Errorf("app error: %v", err)
+	//	return
+	//}
+	c := conf.GetConfig()
+	fmt.Println(c)
 }

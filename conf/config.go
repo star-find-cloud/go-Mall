@@ -26,6 +26,7 @@ type AppConfig struct {
 	Version              string `mapstructure:"version"`
 	Sessiongcmaxlifetime int    `mapstructure:"sessiongcmaxlifetime"`
 	SessionName          string `mapstructure:"session_name"`
+	JWTSecret            string `mapstructure:"jwt_secret"`
 }
 
 type DatabaseConf struct {
@@ -136,15 +137,21 @@ var c Config
 func init() {
 	viper.SetConfigName("StarMall")
 	viper.SetConfigType("toml")
-	viper.AddConfigPath(".")
+	viper.AddConfigPath("../")
 
 	logFile, err := os.OpenFile("E:/var/log/star-Mall/conf.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
 		log.Println(err)
 	}
 	defer logFile.Close()
-
 	log.SetOutput(logFile)
+
+	// 读取环境变量
+	viper.AutomaticEnv()
+	viper.SetEnvPrefix("")
+
+	viper.BindEnv("jwt_secret", "JWT_SECRET")
+
 	// 读取配置文件
 	err = viper.ReadInConfig()
 	if err != nil {
@@ -154,11 +161,13 @@ func init() {
 		log.Println("configuration file was read successfully")
 	}
 
+	//viper.GetString("JWT_SECRET")
 	// 将 viper 读到的数据序列化写入 config
 	if err := viper.Unmarshal(&c); err != nil {
 		now := time.Now()
 		log.Printf("%v: viper Unmarshal err:%s \n", now.Format("2006-01-02 15:04:05"), err)
 	}
+	c.App.JWTSecret = os.Getenv("JWT_SECRET")
 }
 
 func GetConfig() *Config {

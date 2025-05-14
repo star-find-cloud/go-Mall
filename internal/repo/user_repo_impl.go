@@ -34,6 +34,22 @@ func (r UserRepositoryImpl) GetByID(ctx context.Context, id int) (*model.User, e
 	return user, nil
 }
 
+func (r UserRepositoryImpl) GetByEmail(ctx context.Context, email string) (*model.User, error) {
+	var user *model.User
+	sqlStr := "select id,name,image,last_ip,image,is_vip from user.user where email = ? LIMIT 1;"
+
+	err := r.db.GetContext(ctx, user, sqlStr, email)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			applog.AppLogger.Warnf("user not found (email: %s)", email)
+			return nil, fmt.Errorf("%w: user id %s", err, email)
+		}
+		applog.AppLogger.Errorf("user repo error: %v", err)
+		return nil, fmt.Errorf("failed to get user: %w", err)
+	}
+	return user, nil
+}
+
 func (r UserRepositoryImpl) Create(ctx context.Context, user *model.User) error {
 	sqlStr := "insert into user.user (name,password,email,phone,create_time, update_time, status, last_ip, image, is_vip) values (?,?,?,?,?,?,?,?,?,?)"
 
