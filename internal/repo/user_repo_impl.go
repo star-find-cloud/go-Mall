@@ -19,10 +19,10 @@ func NewUserRepositoryImpl(db *sqlx.DB) *UserRepositoryImpl {
 }
 
 func (r UserRepositoryImpl) GetByID(ctx context.Context, id int) (*model.User, error) {
-	var user model.User
+	var user *model.User
 	sqlStr := "select id,name,image,last_ip,image,is_vip from user.user where id = ? LIMIT 1;"
 
-	err := r.db.GetContext(ctx, &user, sqlStr, id)
+	err := r.db.GetContext(ctx, user, sqlStr, id)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			applog.AppLogger.Warnf("user not found (id: %d)", id)
@@ -31,13 +31,13 @@ func (r UserRepositoryImpl) GetByID(ctx context.Context, id int) (*model.User, e
 		applog.AppLogger.Errorf("user repo error: %v", err)
 		return nil, fmt.Errorf("failed to get user: %w", err)
 	}
-	return &user, nil
+	return user, nil
 }
 
-func (r UserRepositoryImpl) Creat(ctx context.Context, user *model.User) error {
+func (r UserRepositoryImpl) Create(ctx context.Context, user *model.User) error {
 	sqlStr := "insert into user.user (name,password,email,phone,create_time, update_time, status, last_ip, image, is_vip) values (?,?,?,?,?,?,?,?,?,?)"
 
-	result, err := r.db.ExecContext(ctx, sqlStr,
+	_, err := r.db.ExecContext(ctx, sqlStr,
 		user.Name,
 		user.Password,
 		user.Email,
@@ -57,13 +57,13 @@ func (r UserRepositoryImpl) Creat(ctx context.Context, user *model.User) error {
 		return fmt.Errorf("failed to get user: %w", err)
 	}
 
-	id, _ := result.LastInsertId()
-	user.ID = int(id)
+	//id, _ := result.LastInsertId()
+	//user.ID = int(id)
 	return nil
 }
 
 func (r UserRepositoryImpl) Update(ctx context.Context, user *model.User) error {
-	sqlStr := "update user.user set name = ?,email = ?,phone = ?, update_time = ?, image = ? where id = ?"
+	sqlStr := "update user.user set name = ?,email = ?,phone = ?, update_time = ?, image = ? where id = ?;"
 
 	_, err := r.db.ExecContext(ctx, sqlStr, user.Name, user.Email, user.Phone, user.UpdateTime, user.Image, user.ID)
 	if err != nil {

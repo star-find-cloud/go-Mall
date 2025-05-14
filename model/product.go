@@ -1,7 +1,7 @@
 package model
 
 type Product struct {
-	ID              int      `db:"id"`
+	ID              int64    `db:"id"`
 	Title           string   `db:"title"`
 	SubTitle        string   `db:"sub_title"`
 	ProductSn       string   `db:"product_sn"`       // 商品编号
@@ -28,6 +28,6 @@ type Product struct {
 	IsBest          int      `db:"is_best"`          // 是否精品
 	IsNew           int      `db:"is_new"`           // 是否新品
 	ProductTypeID   int      `db:"product_type_id"`  // 商品类型ID
-	Sort            int      `db:"sort"`             // 排序
+	Sort            int      `db:"sort"`             // 排序权重
 	status          int      `db:"status"`
 }
