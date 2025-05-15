@@ -146,11 +146,11 @@ func init() {
 	defer logFile.Close()
 	log.SetOutput(logFile)
 
-	// 读取环境变量
-	viper.AutomaticEnv()
-	viper.SetEnvPrefix("")
-
-	viper.BindEnv("jwt_secret", "JWT_SECRET")
+	//// 读取环境变量
+	//viper.AutomaticEnv()
+	//viper.SetEnvPrefix("")
+	//
+	//viper.BindEnv("jwt_secret", "JWT_SECRET")
 
 	// 读取配置文件
 	err = viper.ReadInConfig()
