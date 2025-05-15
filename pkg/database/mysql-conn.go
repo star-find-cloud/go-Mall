@@ -16,7 +16,7 @@ type MySQL struct {
 
 var (
 	master = &MySQL{}
-	slaves = &[]MySQL{}
+	//slaves = &[]MySQL{}
 )
 
 func init() {
@@ -38,21 +38,21 @@ func init() {
 	m_db.SetMaxOpenConns(c.Database.MySQL.MaxOpenConns)
 	m_db.SetMaxIdleConns(c.Database.MySQL.MaxIdleConns)
 
-	for _, slave := range c.Database.MySQL.Slaves {
-		slaveDSN := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&timeout=%ss", user, passwd, slave.Host, slave.Port, databasename, timeout)
-		s_db, err1 := sqlx.Connect("mysql", slaveDSN)
-		if err1 != nil {
-			log.MySQLLogger.Errorf("MySQL slaves connect faild: %s slaveIP: %s  \n", err, slave.Host)
-		} else {
-			log.MySQLLogger.Infof("MySQL slaves connection successful: %s\n", slave.Host)
-		}
-		s_db.SetMaxOpenConns(c.Database.MySQL.MaxOpenConns)
-		s_db.SetMaxIdleConns(c.Database.MySQL.MaxIdleConns)
-
-		if s_db != nil {
-			*slaves = append(*slaves, MySQL{_db: s_db})
-		}
-	}
+	//for _, slave := range c.Database.MySQL.Slaves {
+	//	slaveDSN := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&timeout=%ss", user, passwd, slave.Host, slave.Port, databasename, timeout)
+	//	s_db, err1 := sqlx.Connect("mysql", slaveDSN)
+	//	if err1 != nil {
+	//		log.MySQLLogger.Errorf("MySQL slaves connect faild: %s slaveIP: %s  \n", err, slave.Host)
+	//	} else {
+	//		log.MySQLLogger.Infof("MySQL slaves connection successful: %s\n", slave.Host)
+	//	}
+	//	s_db.SetMaxOpenConns(c.Database.MySQL.MaxOpenConns)
+	//	s_db.SetMaxIdleConns(c.Database.MySQL.MaxIdleConns)
+	//
+	//	if s_db != nil {
+	//		*slaves = append(*slaves, MySQL{_db: s_db})
+	//	}
+	//}
 
 	master._db = m_db
 }
@@ -61,9 +61,9 @@ func GetDB() *sqlx.DB {
 	return master._db
 }
 
-func GetMySQLSlaves() *sqlx.DB {
-	for _, slave := range *slaves {
-		return slave._db
-	}
-	return nil
-}
+//func GetMySQLSlaves() *sqlx.DB {
+//	for _, slave := range *slaves {
+//		return slave._db
+//	}
+//	return nil
+//}

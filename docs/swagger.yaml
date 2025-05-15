@@ -1,0 +1,103 @@
+definitions:
+  handler.LoginRequest:
+    properties:
+      email:
+        type: string
+      id:
+        type: integer
+      password:
+        minLength: 6
+        type: string
+    required:
+    - password
+    type: object
+  handler.LoginResponse:
+    properties:
+      token:
+        type: string
+    type: object
+  handler.RegisterRequest:
+    properties:
+      email:
+        type: string
+      image:
+        type: string
+      name:
+        maxLength: 32
+        minLength: 2
+        type: string
+      password:
+        minLength: 8
+        type: string
+      phone:
+        type: string
+      sex:
+        type: integer
+    required:
+    - email
+    - image
+    - name
+    - password
+    - phone
+    - sex
+    type: object
+  utils.ResponseError:
+    properties:
+      code:
+        type: integer
+      error: {}
+      message:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /api/v1/users/login:
+    post:
+      consumes:
+      - application/json
+      description: 用户通过 email 或 id 登录
+      parameters:
+      - description: Login request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.LoginResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ResponseError'
+      summary: Login
+  /api/v1/users/register:
+    post:
+      consumes:
+      - application/json
+      description: 用户注册
+      parameters:
+      - description: Register request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.LoginResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ResponseError'
+      summary: Register
+swagger: "2.0"

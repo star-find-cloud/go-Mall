@@ -22,6 +22,8 @@ func healthCheck(c *gin.Context) {
 }
 
 func InitRouter(userHandler *handler.UserHandler) *gin.Engine {
+	// 设置 gin 模式
+	gin.SetMode(gin.ReleaseMode)
 	r := gin.New()
 
 	r.Use(
@@ -29,10 +31,17 @@ func InitRouter(userHandler *handler.UserHandler) *gin.Engine {
 		middleware.GinRecoveryWithZap(true),
 	)
 
+	publicGroup := r.Group("/api")
+	{
+		publicGroup.POST("/login", userHandler.Login)
+		publicGroup.POST("/register", userHandler.Register)
+		publicGroup.GET("/health", healthCheck)
+	}
+
 	authGroup := r.Group("/api")
 	authGroup.Use(middleware.JwtAuth())
 	{
-		authGroup.GET("/login", userHandler.Login)
+		//authGroup.POST("/update", userHandler.)
 	}
 
 	return r

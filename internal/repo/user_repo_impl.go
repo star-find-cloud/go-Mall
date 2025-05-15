@@ -20,7 +20,7 @@ func NewUserRepositoryImpl(db *sqlx.DB) *UserRepositoryImpl {
 
 func (r UserRepositoryImpl) GetByID(ctx context.Context, id int) (*model.User, error) {
 	var user *model.User
-	sqlStr := "select id,name,image,last_ip,image,is_vip from user.user where id = ? LIMIT 1;"
+	sqlStr := "select id,name,image,sex,last_ip,image,is_vip from user.user where id = ? LIMIT 1;"
 
 	err := r.db.GetContext(ctx, user, sqlStr, id)
 	if err != nil {
@@ -36,7 +36,7 @@ func (r UserRepositoryImpl) GetByID(ctx context.Context, id int) (*model.User, e
 
 func (r UserRepositoryImpl) GetByEmail(ctx context.Context, email string) (*model.User, error) {
 	var user *model.User
-	sqlStr := "select id,name,image,last_ip,image,is_vip from user.user where email = ? LIMIT 1;"
+	sqlStr := "select id,name, sex,image,last_ip,image,is_vip from user.user where email = ? LIMIT 1;"
 
 	err := r.db.GetContext(ctx, user, sqlStr, email)
 	if err != nil {
@@ -51,13 +51,14 @@ func (r UserRepositoryImpl) GetByEmail(ctx context.Context, email string) (*mode
 }
 
 func (r UserRepositoryImpl) Create(ctx context.Context, user *model.User) error {
-	sqlStr := "insert into user.user (name,password,email,phone,create_time, update_time, status, last_ip, image, is_vip) values (?,?,?,?,?,?,?,?,?,?)"
+	sqlStr := "insert into user.user (name,password,email,phone,sex,create_time, update_time, status, last_ip, image, is_vip) values (?,?,?,?,?,?,?,?,?,?,?)"
 
 	_, err := r.db.ExecContext(ctx, sqlStr,
 		user.Name,
 		user.Password,
 		user.Email,
 		user.Phone,
+		user.Sex,
 		user.CreateTime,
 		user.UpdateTime,
 		user.Status,
@@ -79,7 +80,7 @@ func (r UserRepositoryImpl) Create(ctx context.Context, user *model.User) error 
 }
 
 func (r UserRepositoryImpl) Update(ctx context.Context, user *model.User) error {
-	sqlStr := "update user.user set name = ?,email = ?,phone = ?, update_time = ?, image = ? where id = ?;"
+	sqlStr := "update user.user set name = ?,email = ?,phone = ?, sex = ?, update_time = ?, image = ? where id = ?;"
 
 	_, err := r.db.ExecContext(ctx, sqlStr, user.Name, user.Email, user.Phone, user.UpdateTime, user.Image, user.ID)
 	if err != nil {

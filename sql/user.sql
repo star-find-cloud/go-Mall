@@ -1,12 +1,14 @@
 create database if not exists user;
 use user;
 
+drop table if exists user;
 CREATE TABLE IF NOT EXISTS `user` (
      `id` INT NOT NULL AUTO_INCREMENT COMMENT '用户ID',
      `name` VARCHAR(255) DEFAULT '' COMMENT '用户名',
     `password` VARCHAR(255) DEFAULT '' COMMENT '密码',
     `email` VARCHAR(100) DEFAULT '' COMMENT '邮箱',
     `phone` VARCHAR(20) DEFAULT '' COMMENT '手机号',
+    `sex`   int default 0 comment '性别',
     `create_time` INT DEFAULT 0 COMMENT '创建时间',
     `update_time` INT DEFAULT 0 COMMENT '更新时间',
     `status` INT DEFAULT 0 COMMENT '状态',
