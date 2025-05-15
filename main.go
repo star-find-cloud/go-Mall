@@ -1,29 +1,23 @@
 package main
 
 import (
-	"fmt"
-	"github.com/star-find-cloud/star-mall/conf"
+	"github.com/star-find-cloud/star-mall/handler"
+	"github.com/star-find-cloud/star-mall/internal/repo"
+	"github.com/star-find-cloud/star-mall/internal/service"
+	"github.com/star-find-cloud/star-mall/pkg/database"
+	"github.com/star-find-cloud/star-mall/routers"
 )
 
 func main() {
-	//r := gin.Default()
-	//r.GET("/", func(c *gin.Context) {
-	//	c.JSON(http.StatusOK, gin.H{
-	//		"message": "欢迎使用star mall",
-	//	})
-	//})
-	//
-	//authGroup := r.Group("/login")
-	//{
-	//	authGroup.POST("/login/id", loginByID)
-	//	authGroup.POST("/login/email", loginByEmail)
-	//}
-	//
-	//err := r.Run(":8080")
-	//if err != nil {
-	//	fmt.Errorf("app error: %v", err)
-	//	return
-	//}
-	c := conf.GetConfig()
-	fmt.Println(c)
+	db := database.GetDB()
+
+	userRepo := repo.NewUserRepositoryImpl(db)
+	userService := service.NewUserService(userRepo)
+	userHandler := handler.NewUserHandler(userService)
+
+	var r = routers.InitRouter(userHandler)
+	err := r.Run("localhost:8080")
+	if err != nil {
+		panic(err)
+	}
 }
