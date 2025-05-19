@@ -21,7 +21,7 @@ func healthCheck(c *gin.Context) {
 	})
 }
 
-func InitRouter(userHandler *handler.UserHandler) *gin.Engine {
+func InitRouter(userHandler *handler.UserHandler, imageHandler *handler.ImageHandler) *gin.Engine {
 	// 设置 gin 模式
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.New()
@@ -42,6 +42,12 @@ func InitRouter(userHandler *handler.UserHandler) *gin.Engine {
 	authGroup.Use(middleware.JwtAuth())
 	{
 		//authGroup.POST("/update", userHandler.)
+	}
+
+	imageGroup := r.Group("/image")
+	{
+		imageGroup.POST("/upload", imageHandler.UploadImage)
+		imageGroup.POST("/uploads", imageHandler.UploadImages)
 	}
 
 	return r

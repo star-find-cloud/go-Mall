@@ -7,11 +7,10 @@ varsion = 'v0.1'
 sessionon = true
 sessiongcmaxlifetime = 3600
 session_name = 'star-mall'
-jwt_secret = "Star-Mall"
 
 [database]
 [database.mysql]
-master_host = '172.20.10.71'
+master_host = 'host'
 master_port = 13306
 user = 'dg'
 password = '123456'
@@ -20,33 +19,33 @@ max_open_conns = 100
 max_idle_conns = 20
 timeout = 10
 
-#[[database.mysql.slaves]]
-#host = '172.20.10.72'
-#port = 23306
-#
-#[[database.mysql.slaves]]
-#host = '172.20.10.73'
-#port = 33306
+[[database.mysql.slaves]]
+host = 'host'
+port = 23306
+
+[[database.mysql.slaves]]
+host = 'host'
+port = 33306
 
 [database.redis]
-master_host = '172.20.20.71'
+master_host = 'host'
 master_port = 16379
 password = '123456'
 
 [[database.redis.slaves]]
-host = '172.20.20.72'
+host = 'host'
 port = 26379
 
 [[database.redis.slaves]]
-host = '172.20.20.73'
+host = 'host'
 port = 36379
 
 [mail]
-user = "star-find-cloud@foxmail.com"
+user = "username@qq.com"
 SMTP-code = "fsjrvxgzxyoqddhf"
 host = "smtp.qq.com"
 port = 465
-from = "star-find-cloud@foxmail.com"
+from = "username@qq.com"
 
 [cookie]
 name = "star-mall"
@@ -67,9 +66,7 @@ max_age = 30
 compress = false
 
 [etcd]
-endpoints = ["172.20.20.81:2379", "172.20.20.82:2379", "172.20.20.83:2379"]
-# username = "root"
-# password = "123456"
+endpoints = ["host1:2379", "host2:2379", "host3:2379"]
 dial_timeout = "5s"
 auto_sync_interval = "5m"
 max_call_send_msg_size = 52428800
@@ -99,3 +96,22 @@ suites = ["TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384", "TLS_ECDHE_RSA_WITH_AES_256
 [tls.advanced]
 session_tickets = true
 curve_preferences = ["X25519", "P256"]
+
+[oss]
+[oos.TencentCOS]
+bucket = "yourBucketName"
+region = "your oss region"
+secret_id = "your secret id"
+secret_key = "your secret key"
+
+[oss.AliCloudOOS]
+bucket = "yourBucketName"
+endpoint = "yourEndpoint"
+access_key_id = "yourAccessKeyId"
+access_key_secret = "yourAccessKeySecret"
+
+[oos.AmazonS3]
+bucket = "your-bucket-name"
+#region = "your region"
+access_key_id = "your access_key_id"
+secret_access_key = "your secret_access_key"

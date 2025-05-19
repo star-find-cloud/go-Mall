@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
+	"github.com/bwmarrin/snowflake"
 	"github.com/gin-gonic/gin"
 	"os"
 	"regexp"
@@ -101,4 +102,39 @@ func ParsePathParamInt(c *gin.Context, paramName string) (int, error) {
 		return 0, err
 	}
 	return id, nil
+}
+
+func ExtractInt(s string) (int, error) {
+	// 匹配第一个连续的整数（支持负号）
+	re := regexp.MustCompile(`-?\d+`)
+	match := re.FindString(s)
+	if match == "" {
+		return 0, errors.New("no integer found")
+	}
+	return strconv.Atoi(match)
+}
+
+// 生成 uid
+func GenerateUid() (string, error) {
+	nodeID, _ := ExtractInt(GetHostName())
+	node, err := snowflake.NewNode(int64(nodeID))
+	if err != nil {
+		return "", err
+	}
+
+	return node.Generate().String(), nil
+}
+
+func GetTimeNow() int64 {
+	// 构造起始时间
+	startTime := time.Date(2008, 10, 1, 12, 31, 0, 0, time.UTC)
+
+	// 获取当前时间
+	currentTime := time.Now().UTC() // 保持时区一致
+
+	// 计算时间差并转换为纳秒
+	duration := currentTime.Sub(startTime)
+	nanoseconds := duration.Nanoseconds()
+
+	return nanoseconds
 }

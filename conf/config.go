@@ -5,6 +5,7 @@ import (
 	"github.com/spf13/viper"
 	"log"
 	"os"
+	"runtime"
 	"time"
 )
 
@@ -16,6 +17,7 @@ type Config struct {
 	Cookie   CookieConf
 	Etcd     EtcdConf
 	TLS      TLSConfig
+	OSS      OSSConfig
 }
 
 type AppConfig struct {
@@ -103,6 +105,7 @@ type EtcdConf struct {
 	TLS                TLSConfig
 }
 
+// TLS 证书配置
 type TLSConfig struct {
 	Server        ServerConfig
 	Client        ClientConfig
@@ -132,12 +135,49 @@ type AdvancedConfig struct {
 	CurvePreferences []string `mapstructure:"curve_preferences"` // 椭圆曲线优先级（如"X25519"、"P-256"）
 }
 
+// oos 存储配置
+type OSSConfig struct {
+	TencentCOS  TencentCosConfig
+	AliCloudOOS AliCloudOssConfig
+	AmazonS3    AmazonS3Config
+}
+
+type TencentCosConfig struct {
+	Bucket    string `mapstructure:"bucket"`
+	Region    string `mapstructure:"region"`
+	SecretId  string `mapstructure:"secret_id"`
+	SecretKey string `mapstructure:"secret_key"`
+}
+
+type AliCloudOssConfig struct {
+	Bucket          string `mapstructure:"bucket"`
+	Endpoint        string `mapstructure:"endpoint"`
+	AccessKeyID     string `mapstructure:"access_key_id"`
+	AccessKeySecret string `mapstructure:"access_key_secret"`
+}
+
+type AmazonS3Config struct {
+	Bucket          string `mapstructure:"bucket"`
+	AccessKeyID     string `mapstructure:"access_key_id"`
+	AccessKeySecret string `mapstructure:"secret_access_key"`
+}
+
 var c Config
 
 func init() {
-	viper.SetConfigName("StarMall")
-	viper.SetConfigType("toml")
-	viper.AddConfigPath("./")
+	runtimeOS := runtime.GOOS
+
+	// 判断当前操作系统, 根据操作系统设置配置文件路径
+	switch runtimeOS {
+	case "windows":
+		viper.SetConfigName("StarMall")
+		viper.SetConfigType("toml")
+		viper.AddConfigPath("./")
+	case "linux":
+		viper.SetConfigName("StarMall-linux")
+		viper.SetConfigType("toml")
+		viper.AddConfigPath("/etc/StarMall")
+	}
 
 	logFile, err := os.OpenFile("E:/var/log/star-Mall/conf.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {

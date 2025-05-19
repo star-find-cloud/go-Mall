@@ -20,12 +20,12 @@ func NewUserRepositoryImpl(db *sqlx.DB) *UserRepositoryImpl {
 
 func (r UserRepositoryImpl) GetByID(ctx context.Context, id int) (*model.User, error) {
 	var user *model.User
-	sqlStr := "select id,name,image,sex,last_ip,image,is_vip from user.user where id = ? LIMIT 1;"
+	sqlStr := "select id,name,image,sex,last_ip,image,is_vip from shop.user where id = ? LIMIT 1;"
 
 	err := r.db.GetContext(ctx, user, sqlStr, id)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			applog.AppLogger.Warnf("user not found (id: %d)", id)
+			applog.MySQLLogger.Warnf("user not found (id: %d)", id)
 			return nil, fmt.Errorf("%w: user id %d", err, id)
 		}
 		applog.AppLogger.Errorf("user repo error: %v", err)
@@ -36,12 +36,12 @@ func (r UserRepositoryImpl) GetByID(ctx context.Context, id int) (*model.User, e
 
 func (r UserRepositoryImpl) GetByEmail(ctx context.Context, email string) (*model.User, error) {
 	var user *model.User
-	sqlStr := "select id,name, sex,image,last_ip,image,is_vip from user.user where email = ? LIMIT 1;"
+	sqlStr := "select id,name, sex,image,last_ip,image,is_vip from shop.user where email = ? LIMIT 1;"
 
 	err := r.db.GetContext(ctx, user, sqlStr, email)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			applog.AppLogger.Warnf("user not found (email: %s)", email)
+			applog.MySQLLogger.Warnf("user not found (email: %s)", email)
 			return nil, fmt.Errorf("%w: user id %s", err, email)
 		}
 		applog.AppLogger.Errorf("user repo error: %v", err)
@@ -51,7 +51,7 @@ func (r UserRepositoryImpl) GetByEmail(ctx context.Context, email string) (*mode
 }
 
 func (r UserRepositoryImpl) Create(ctx context.Context, user *model.User) error {
-	sqlStr := "insert into user.user (name,password,email,phone,sex,create_time, update_time, status, last_ip, image, is_vip) values (?,?,?,?,?,?,?,?,?,?,?)"
+	sqlStr := "insert into shop.user (name,password,email,phone,sex,create_time, update_time, status, last_ip, image, is_vip) values (?,?,?,?,?,?,?,?,?,?,?)"
 
 	_, err := r.db.ExecContext(ctx, sqlStr,
 		user.Name,
@@ -63,11 +63,11 @@ func (r UserRepositoryImpl) Create(ctx context.Context, user *model.User) error 
 		user.UpdateTime,
 		user.Status,
 		user.LastIP,
-		user.Image,
+		user.ImageID,
 		user.IsVip)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			applog.AppLogger.Warnf("user creat err: %v", err)
+			applog.MySQLLogger.Warnf("user creat err: %v", err)
 			return fmt.Errorf("user creat err: %v", err)
 		}
 		applog.AppLogger.Errorf("user repo error: %v", err)
@@ -80,12 +80,12 @@ func (r UserRepositoryImpl) Create(ctx context.Context, user *model.User) error 
 }
 
 func (r UserRepositoryImpl) Update(ctx context.Context, user *model.User) error {
-	sqlStr := "update user.user set name = ?,email = ?,phone = ?, sex = ?, update_time = ?, image = ? where id = ?;"
+	sqlStr := "update shop.user set name = ?,email = ?,phone = ?, sex = ?, update_time = ?, image = ? where id = ?;"
 
-	_, err := r.db.ExecContext(ctx, sqlStr, user.Name, user.Email, user.Phone, user.UpdateTime, user.Image, user.ID)
+	_, err := r.db.ExecContext(ctx, sqlStr, user.Name, user.Email, user.Phone, user.UpdateTime, user.ImageID, user.ID)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			applog.AppLogger.Warnf("user update err: %v", err)
+			applog.MySQLLogger.Warnf("user update err: %v", err)
 			return fmt.Errorf("user update err: %v", err)
 		}
 		applog.AppLogger.Errorf("user repo error: %v", err)
@@ -95,12 +95,12 @@ func (r UserRepositoryImpl) Update(ctx context.Context, user *model.User) error 
 }
 
 func (r UserRepositoryImpl) UpdatePasswd(ctx context.Context, user *model.User) error {
-	sqlStr := "update user.user set password = ?, update_time = ? where id = ?"
+	sqlStr := "update shop.user set password = ?, update_time = ? where id = ?"
 
 	_, err := r.db.ExecContext(ctx, sqlStr, user.Password, user.UpdateTime, user.ID)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			applog.AppLogger.Warnf("user update err: %v", err)
+			applog.MySQLLogger.Warnf("user update err: %v", err)
 			return fmt.Errorf("user update err: %v", err)
 		}
 		applog.AppLogger.Errorf("user repo error: %v", err)
@@ -110,12 +110,12 @@ func (r UserRepositoryImpl) UpdatePasswd(ctx context.Context, user *model.User) 
 }
 
 func (r UserRepositoryImpl) Delete(ctx context.Context, id int) error {
-	sqlStr := "DELETE FROM user.user WHERE id = ? "
+	sqlStr := "DELETE FROM shop.user WHERE id = ? "
 
 	_, err := r.db.ExecContext(ctx, sqlStr, id)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			applog.AppLogger.Warnf("user delete err: %v", err)
+			applog.MySQLLogger.Warnf("user delete err: %v", err)
 			return fmt.Errorf("user delete err: %v", err)
 		}
 		applog.AppLogger.Errorf("user repo error: %v", err)

@@ -35,6 +35,15 @@ func NewUserHandler(userService *service.UserService) *UserHandler {
 	return &UserHandler{UserService: userService}
 }
 
+// @Summary GetUser
+// @Description 获取用户信息
+// @Accept json
+// @Produce json
+// @Param id path int true "User ID"
+// @Success 200 {object} model.User
+// @Failure 400 {object} utils.ResponseError
+// @Failure 404 {object} utils.ResponseError
+// @Router /api/v1/users/{id} [get]`
 func (h *UserHandler) GetUser(c *gin.Context) {
 	id, err := utils.ParsePathParamInt(c, "id")
 	if err != nil {
@@ -113,7 +122,7 @@ func (h *UserHandler) Register(c *gin.Context) {
 		return
 	}
 
-	token, err := h.UserService.Register(c.Request.Context(), req.Name, req.Password, req.Email, req.Phone, req.Image, req.Sex)
+	token, err := h.UserService.Register(c.Request.Context(), req.Name, req.Password, req.Email, req.Phone, req.Sex)
 	if err != nil {
 		logger.AppLogger.Errorf("register failed: %v", err)
 		utils.RespondError(c, http.StatusInternalServerError, "register failed", err)

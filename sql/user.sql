@@ -1,5 +1,4 @@
-create database if not exists user;
-use user;
+use shop;
 
 drop table if exists user;
 CREATE TABLE IF NOT EXISTS `user` (

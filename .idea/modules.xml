@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/StarMall.iml" filepath="$PROJECT_DIR$/.idea/StarMall.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../StarMall-html/.idea/StarMall-html.iml" filepath="$PROJECT_DIR$/../StarMall-html/.idea/StarMall-html.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../var/.idea/var.iml" filepath="$PROJECT_DIR$/../var/.idea/var.iml" />
     </modules>
   </component>
 </project>

@@ -1,0 +1,60 @@
+syntax = "proto3";
+package image;
+option go_package = "./pb";
+
+
+service ImageService {
+  // 传统Unary RPC（获取元数据）
+  rpc GetImageInfo(ImageRequest) returns (ImageProto);
+
+  // 客户端流式上传（支持大文件分片）
+  rpc UploadImage(stream ImageChunk) returns (UploadResponse);
+
+  // 服务端流式下载（支持断点续传）
+  rpc DownloadImage(ImageRequest) returns (stream ImageChunk);
+}
+
+// ========= 请求/响应结构 =========
+message ImageRequest {
+  int64 image_id = 1;  // 唯一标识符
+}
+
+message ImageProto {
+  int64 image_id = 1;      //
+  int64 owner_type = 2;    // 所属类型（用户/商品等）
+  int64 owner_id = 3;      // 所属对象ID
+  string oss_path = 4;      // COS存储路径[11,14](@ref)
+  string sha256_hash = 5;   // 完整性校验
+  bool is_compressed = 6;   // 压缩状态
+  bytes data = 7;
+}
+
+message UploadResponse {
+  string oss_path = 1;      // 云端存储路径
+  string sha256_hash = 2;   // 文件哈希值
+  uint32 chunk_count = 3;   // 接收分片总数
+  uint32 success_count = 4; // 上传成功数量
+}
+
+// ========= 流式传输协议 =========
+message ImageChunk {
+  bytes content = 1;        // 二进制分片数据
+  string image_id = 2;      // 文件唯一标识[7](@ref)
+  uint32 seq = 3;           // 分片序号（0起始）
+  string sha256_chunk = 4;  // 分片哈希校验（可选）
+}
+
+// 错误响应
+message ErrorResponse {
+  ErrorCode code = 1;
+  string message = 2;
+}
+
+// ========= 错误码规范 =========
+enum ErrorCode {
+  UNKNOWN = 0;
+  INVALID_CHUNK = 1;       // 分片校验失败
+  UPLOAD_TIMEOUT = 2;      // 上传超时
+  COS_CONNECTION_ERROR = 3; // COS连接异常[14](@ref)
+  COMPRESSION_FAILED = 4;   // 压缩失败
+}

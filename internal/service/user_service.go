@@ -65,7 +65,7 @@ func (s *UserService) LoginByEmail(ctx context.Context, email, password string) 
 	return token, nil
 }
 
-func (s *UserService) Register(ctx context.Context, name, password, email, phone, image string, sex int) (string, error) {
+func (s *UserService) Register(ctx context.Context, name, password, email, phone string, sex int) (string, error) {
 	// 验证用户邮箱是否合法
 	if !utils.VerifyEmail(email) {
 		return "", errors.New("email is not valid.")
@@ -89,7 +89,6 @@ func (s *UserService) Register(ctx context.Context, name, password, email, phone
 		Password: hashedPassword,
 		Email:    email,
 		Phone:    phone,
-		Image:    image,
 		Sex:      sex,
 	}
 
