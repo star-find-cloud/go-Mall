@@ -5,16 +5,25 @@ import (
 	"github.com/star-find-cloud/star-mall/internal/repo"
 	"github.com/star-find-cloud/star-mall/model"
 	appjwt "github.com/star-find-cloud/star-mall/pkg/jwt"
+	applog "github.com/star-find-cloud/star-mall/pkg/logger"
+	proto "github.com/star-find-cloud/star-mall/protobuf/pb"
 	"github.com/star-find-cloud/star-mall/utils"
+	"github.com/tencentyun/cos-go-sdk-v5"
 	"golang.org/x/net/context"
 )
 
 type UserService struct {
-	repo repo.UserRepository
+	repo      repo.UserRepository
+	ossClient *cos.Client
+	imageRepo repo.ImageRepository
 }
 
-func NewUserService(repo repo.UserRepository) *UserService {
-	return &UserService{repo: repo}
+func NewUserService(repo repo.UserRepository, oosClient *cos.Client, imageRepo repo.ImageRepository) *UserService {
+	return &UserService{
+		repo:      repo,
+		ossClient: oosClient,
+		imageRepo: imageRepo,
+	}
 }
 
 func (s *UserService) GetUsrByID(ctx context.Context, id int) (*model.User, error) {
@@ -92,7 +101,7 @@ func (s *UserService) Register(ctx context.Context, name, password, email, phone
 		Sex:      sex,
 	}
 
-	if err := s.repo.Create(ctx, user); err != nil {
+	if err := s.Create(ctx, user); err != nil {
 		return "", errors.New("failed to create user")
 	}
 
@@ -102,4 +111,40 @@ func (s *UserService) Register(ctx context.Context, name, password, email, phone
 	}
 
 	return token, nil
+}
+
+func (s *UserService) Update(ctx context.Context, name, email, phone string, id, sex int) error {
+	if id == 0 {
+		return errors.New("invalid user")
+	}
+
+	user, err := s.repo.GetByID(ctx, id)
+	if err != nil {
+		return errors.New("user not found")
+	}
+
+	if err := s.repo.Update(ctx, user); err != nil {
+		return errors.New("failed to update user")
+	}
+	return nil
+}
+
+func (s UserService) UpdateImage(ctx context.Context, userID int64, newImage *proto.ImageProto) error {
+	ossService := NewOSSService(s.ossClient, s.imageRepo)
+
+	_, id, err := ossService.UploadImage(ctx, newImage)
+	if err != nil {
+		applog.AppLogger.Errorf("failed to upload image: %v", err)
+		return err
+	}
+
+	user, err := s.repo.GetByID(ctx, int(userID))
+	user.ImageID = id
+
+	err = s.repo.UpdateImage(ctx, user.ID, user.ImageID)
+	if err != nil {
+		applog.AppLogger.Errorf("failed to update user: %v", err)
+		return err
+	}
+	return nil
 }

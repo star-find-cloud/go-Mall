@@ -26,6 +26,9 @@ type ImageService interface {
 
 	// 删除图片
 	DeleteImage(ctx context.Context, req *proto.ImageRequest) error
+
+	// 更改图片
+	UpdateImage(ctx context.Context, req *proto.ImageProto) error
 }
 
 type OSSService struct {
@@ -40,18 +43,22 @@ func NewOSSService(oosClient *cos.Client, repo repo.ImageRepository) *OSSService
 	}
 }
 
-func (s *OSSService) UploadImage(ctx context.Context, req *proto.ImageProto) (string, error) {
+func (s *OSSService) UploadImage(ctx context.Context, req *proto.ImageProto) (string, int64, error) {
 	fileName := fmt.Sprintf("%d-%d-%d", req.OwnerType, req.OwnerId, utils.GetTimeNow())
 
 	reader := bytes.NewReader(req.Data)
 	_, err := s.oosClient.Object.Put(ctx, fileName, reader, nil)
 	if err != nil {
 		logger.AppLogger.Errorf("upload image err: %v", err)
-		return "", err
+		return "", 0, err
 	}
 
+	id, err := utils.GenerateUid()
+	if err != nil {
+		logger.AppLogger.Errorf("generate uid err: %v", err)
+	}
 	image := &model.Image{
-		ImageID:      req.ImageId,
+		ImageID:      id,
 		OwnerType:    req.OwnerType,
 		OwnerID:      req.OwnerId,
 		OssPath:      fileName,
@@ -59,7 +66,6 @@ func (s *OSSService) UploadImage(ctx context.Context, req *proto.ImageProto) (st
 		IsCompressed: req.IsCompressed,
 	}
 
-	// 获取返回值, OssPath, err, 通过 err 是否为nil判断mysql OssPath 传递成功与否
 	return s.repo.Create(ctx, image)
 }
 
@@ -85,7 +91,7 @@ func (s *OSSService) UploadImages(ctx context.Context, reqs []*proto.ImageProto)
 			case <-ctx.Done():
 				return
 			default:
-				resp, err := s.UploadImage(ctx, req)
+				resp, _, err := s.UploadImage(ctx, req)
 				if err != nil {
 					errChan <- fmt.Errorf("upload image err: %v", err)
 					return
@@ -125,5 +131,9 @@ func (s *OSSService) DownloadImage(ctx context.Context, req *proto.ImageRequest)
 }
 
 func (s *OSSService) DeleteImage(ctx context.Context, req *proto.ImageRequest) error {
+	return nil
+}
+
+func (s *OSSService) UpdateImage(ctx context.Context, req *proto.ImageProto) error {
 	return nil
 }

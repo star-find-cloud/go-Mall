@@ -115,14 +115,14 @@ func ExtractInt(s string) (int, error) {
 }
 
 // 生成 uid
-func GenerateUid() (string, error) {
+func GenerateUid() (int64, error) {
 	nodeID, _ := ExtractInt(GetHostName())
 	node, err := snowflake.NewNode(int64(nodeID))
 	if err != nil {
-		return "", err
+		return 0, err
 	}
 
-	return node.Generate().String(), nil
+	return node.Generate().Int64(), nil
 }
 
 func GetTimeNow() int64 {

@@ -8,6 +8,7 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/star-find-cloud/star-mall/model"
 	applog "github.com/star-find-cloud/star-mall/pkg/logger"
+	"time"
 )
 
 type UserRepositoryImpl struct {
@@ -94,10 +95,25 @@ func (r UserRepositoryImpl) Update(ctx context.Context, user *model.User) error 
 	return nil
 }
 
+func (r UserRepositoryImpl) UpdateImage(ctx context.Context, userID, imageID int64) error {
+	sqlStr := "update shop.user set image = ?, update_time = ? where id = ?"
+
+	_, err := r.db.ExecContext(ctx, sqlStr, imageID, userID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			applog.MySQLLogger.Warnf("user update image err: %v", err)
+			return fmt.Errorf("user update image err: %v", err)
+		}
+		applog.AppLogger.Errorf("user repo error: %v", err)
+		return err
+	}
+	return nil
+}
+
 func (r UserRepositoryImpl) UpdatePasswd(ctx context.Context, user *model.User) error {
 	sqlStr := "update shop.user set password = ?, update_time = ? where id = ?"
 
-	_, err := r.db.ExecContext(ctx, sqlStr, user.Password, user.UpdateTime, user.ID)
+	_, err := r.db.ExecContext(ctx, sqlStr, user.Password, time.Now().String(), user.ID)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			applog.MySQLLogger.Warnf("user update err: %v", err)

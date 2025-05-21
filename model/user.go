@@ -12,6 +12,6 @@ type User struct {
 	UpdateTime int64  `db:"update_time"`
 	Status     int64  `db:"status"`
 	LastIP     string `db:"last_ip"`
-	ImageID    string `db:"image"` // uid
+	ImageID    int64  `db:"image"` // uid
 	IsVip      bool   `db:"is_vip"`
 }

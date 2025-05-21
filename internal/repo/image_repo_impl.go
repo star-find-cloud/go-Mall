@@ -20,7 +20,7 @@ func NewImageRepositoryImpl(db *sqlx.DB) *ImageRepositoryImpl {
 	return &ImageRepositoryImpl{db: db}
 }
 
-func (r *ImageRepositoryImpl) Create(ctx context.Context, image *model.Image) (string, error) {
+func (r *ImageRepositoryImpl) Create(ctx context.Context, image *model.Image) (string, int64, error) {
 	sqlStr := "insert into shop.images (imageID, ownerType, ownerID, ossPath, SHA256Hash, isCompressed) values (?,?,?,?,?,?);"
 	_, err := r.db.ExecContext(ctx, sqlStr,
 		image.ImageID,
@@ -32,23 +32,23 @@ func (r *ImageRepositoryImpl) Create(ctx context.Context, image *model.Image) (s
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			applog.MySQLLogger.Warnf("image creat err: %v", err)
-			return "", fmt.Errorf("image creat err: %v", err)
+			return "", 0, fmt.Errorf("image creat err: %v", err)
 		}
 		applog.AppLogger.Errorf("image repo error: %v", err)
-		return "", fmt.Errorf("failed to get image: %w", err)
+		return "", 0, fmt.Errorf("failed to get image: %w", err)
 	}
-	return image.OssPath, nil
+	return image.OssPath, image.ImageID, nil
 }
 
-func (r *ImageRepositoryImpl) GetByID(ctx context.Context, imageID string) (*model.Image, error) {
+func (r *ImageRepositoryImpl) GetByID(ctx context.Context, imageID int) (*model.Image, error) {
 	var image *model.Image
 	sqlStr := "select ossPath, SHA256Hash, isCompressed from shop.images where imageID = ?;"
 
 	err := r.db.GetContext(ctx, image, sqlStr, imageID)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			applog.MySQLLogger.Warnf("image not found (id: %s)", imageID)
-			return nil, fmt.Errorf("%w: image id %s", err, imageID)
+			applog.MySQLLogger.Warnf("image not found (id: %d)", imageID)
+			return nil, fmt.Errorf("%w: image id %d", err, imageID)
 		}
 		applog.AppLogger.Errorf("image repo error: %v", err)
 		return nil, fmt.Errorf("failed to get image: %w", err)
@@ -86,4 +86,24 @@ func (r *ImageRepositoryImpl) GetByHash(ctx context.Context, hash string) (*mode
 	}
 
 	return image, nil
+}
+
+func (r *ImageRepositoryImpl) UpDate(ctx context.Context, image model.Image) error {
+	tx, _ := r.db.Begin()
+	_, err := tx.QueryContext(ctx, "select ossPath from shop.images where imageID = ?;", image.ImageID)
+	if err != nil {
+		tx.Rollback()
+	}
+
+	sqlStr := "update shop.images set ossPath = ?, SHA256Hash = ?, isCompressed = ? where imageID = ?"
+	_, err = tx.ExecContext(ctx, sqlStr, image.OssPath, image.SHA256Hash, image.IsCompressed)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			applog.MySQLLogger.Warnf("image update err: %v", err)
+			return fmt.Errorf("image update err: %v", err)
+		}
+		applog.AppLogger.Errorf("image repo error: %v", err)
+		return fmt.Errorf("failed to get image: %w", err)
+	}
+	return tx.Commit()
 }

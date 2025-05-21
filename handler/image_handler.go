@@ -40,7 +40,7 @@ func (h ImageHandler) UploadImage(c *gin.Context) {
 		return
 	}
 
-	ossPath, err := h.OssService.UploadImage(c, &req)
+	ossPath, _, err := h.OssService.UploadImage(c, &req)
 	if err != nil {
 		c.ProtoBuf(http.StatusBadRequest, &appproto.ErrorResponse{
 			Code:    appproto.ErrorCode_UPLOAD_TIMEOUT,
