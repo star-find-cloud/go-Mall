@@ -21,15 +21,15 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// ========= 错误码规范 =========
+// 错误码规范
 type ErrorCode int32
 
 const (
 	ErrorCode_UNKNOWN              ErrorCode = 0
-	ErrorCode_INVALID_CHUNK        ErrorCode = 1 // 分片校验失败
-	ErrorCode_UPLOAD_TIMEOUT       ErrorCode = 2 // 上传超时
-	ErrorCode_COS_CONNECTION_ERROR ErrorCode = 3 // COS连接异常[14](@ref)
-	ErrorCode_COMPRESSION_FAILED   ErrorCode = 4 // 压缩失败
+	ErrorCode_INVALID_CHUNK        ErrorCode = 1
+	ErrorCode_UPLOAD_TIMEOUT       ErrorCode = 2
+	ErrorCode_COS_CONNECTION_ERROR ErrorCode = 3
+	ErrorCode_COMPRESSION_FAILED   ErrorCode = 4
 )
 
 // Enum value maps for ErrorCode.
@@ -77,10 +77,12 @@ func (ErrorCode) EnumDescriptor() ([]byte, []int) {
 	return file_image_proto_rawDescGZIP(), []int{0}
 }
 
-// ========= 请求/响应结构 =========
+// ImageRequest 请求参数
 type ImageRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	ImageId       int64                  `protobuf:"varint,1,opt,name=image_id,json=imageId,proto3" json:"image_id,omitempty"` // 唯一标识符
+	OwnerType     int64                  `protobuf:"varint,2,opt,name=owner_type,json=ownerType,proto3" json:"owner_type,omitempty"`
+	OwnerId       int64                  `protobuf:"varint,3,opt,name=owner_id,json=ownerId,proto3" json:"owner_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -122,14 +124,28 @@ func (x *ImageRequest) GetImageId() int64 {
 	return 0
 }
 
+func (x *ImageRequest) GetOwnerType() int64 {
+	if x != nil {
+		return x.OwnerType
+	}
+	return 0
+}
+
+func (x *ImageRequest) GetOwnerId() int64 {
+	if x != nil {
+		return x.OwnerId
+	}
+	return 0
+}
+
 type ImageProto struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	ImageId       int64                  `protobuf:"varint,1,opt,name=image_id,json=imageId,proto3" json:"image_id,omitempty"`                //
-	OwnerType     int64                  `protobuf:"varint,2,opt,name=owner_type,json=ownerType,proto3" json:"owner_type,omitempty"`          // 所属类型（用户/商品等）
-	OwnerId       int64                  `protobuf:"varint,3,opt,name=owner_id,json=ownerId,proto3" json:"owner_id,omitempty"`                // 所属对象ID
-	OssPath       string                 `protobuf:"bytes,4,opt,name=oss_path,json=ossPath,proto3" json:"oss_path,omitempty"`                 // COS存储路径[11,14](@ref)
-	Sha256Hash    string                 `protobuf:"bytes,5,opt,name=sha256_hash,json=sha256Hash,proto3" json:"sha256_hash,omitempty"`        // 完整性校验
-	IsCompressed  bool                   `protobuf:"varint,6,opt,name=is_compressed,json=isCompressed,proto3" json:"is_compressed,omitempty"` // 压缩状态
+	ImageId       int64                  `protobuf:"varint,1,opt,name=image_id,json=imageId,proto3" json:"image_id,omitempty"`
+	OwnerType     int64                  `protobuf:"varint,2,opt,name=owner_type,json=ownerType,proto3" json:"owner_type,omitempty"`
+	OwnerId       int64                  `protobuf:"varint,3,opt,name=owner_id,json=ownerId,proto3" json:"owner_id,omitempty"`
+	OssPath       string                 `protobuf:"bytes,4,opt,name=oss_path,json=ossPath,proto3" json:"oss_path,omitempty"`
+	Sha256Hash    string                 `protobuf:"bytes,5,opt,name=sha256_hash,json=sha256Hash,proto3" json:"sha256_hash,omitempty"`
+	IsCompressed  bool                   `protobuf:"varint,6,opt,name=is_compressed,json=isCompressed,proto3" json:"is_compressed,omitempty"`
 	Data          []byte                 `protobuf:"bytes,7,opt,name=data,proto3" json:"data,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -216,10 +232,10 @@ func (x *ImageProto) GetData() []byte {
 
 type UploadResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	OssPath       string                 `protobuf:"bytes,1,opt,name=oss_path,json=ossPath,proto3" json:"oss_path,omitempty"`                 // 云端存储路径
-	Sha256Hash    string                 `protobuf:"bytes,2,opt,name=sha256_hash,json=sha256Hash,proto3" json:"sha256_hash,omitempty"`        // 文件哈希值
-	ChunkCount    uint32                 `protobuf:"varint,3,opt,name=chunk_count,json=chunkCount,proto3" json:"chunk_count,omitempty"`       // 接收分片总数
-	SuccessCount  uint32                 `protobuf:"varint,4,opt,name=success_count,json=successCount,proto3" json:"success_count,omitempty"` // 上传成功数量
+	OssPath       string                 `protobuf:"bytes,1,opt,name=oss_path,json=ossPath,proto3" json:"oss_path,omitempty"`
+	Sha256Hash    string                 `protobuf:"bytes,2,opt,name=sha256_hash,json=sha256Hash,proto3" json:"sha256_hash,omitempty"`
+	ChunkCount    uint32                 `protobuf:"varint,3,opt,name=chunk_count,json=chunkCount,proto3" json:"chunk_count,omitempty"`
+	SuccessCount  uint32                 `protobuf:"varint,4,opt,name=success_count,json=successCount,proto3" json:"success_count,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -282,13 +298,13 @@ func (x *UploadResponse) GetSuccessCount() uint32 {
 	return 0
 }
 
-// ========= 流式传输协议 =========
+// 流式传输协议
 type ImageChunk struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Content       []byte                 `protobuf:"bytes,1,opt,name=content,proto3" json:"content,omitempty"`                            // 二进制分片数据
-	ImageId       string                 `protobuf:"bytes,2,opt,name=image_id,json=imageId,proto3" json:"image_id,omitempty"`             // 文件唯一标识[7](@ref)
-	Seq           uint32                 `protobuf:"varint,3,opt,name=seq,proto3" json:"seq,omitempty"`                                   // 分片序号（0起始）
-	Sha256Chunk   string                 `protobuf:"bytes,4,opt,name=sha256_chunk,json=sha256Chunk,proto3" json:"sha256_chunk,omitempty"` // 分片哈希校验（可选）
+	Content       []byte                 `protobuf:"bytes,1,opt,name=content,proto3" json:"content,omitempty"`
+	ImageId       string                 `protobuf:"bytes,2,opt,name=image_id,json=imageId,proto3" json:"image_id,omitempty"`
+	Seq           uint32                 `protobuf:"varint,3,opt,name=seq,proto3" json:"seq,omitempty"`
+	Sha256Chunk   string                 `protobuf:"bytes,4,opt,name=sha256_chunk,json=sha256Chunk,proto3" json:"sha256_chunk,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -408,9 +424,12 @@ var File_image_proto protoreflect.FileDescriptor
 
 const file_image_proto_rawDesc = "" +
 	"\n" +
-	"\vimage.proto\x12\x05image\")\n" +
+	"\vimage.proto\x12\x05image\"c\n" +
 	"\fImageRequest\x12\x19\n" +
-	"\bimage_id\x18\x01 \x01(\x03R\aimageId\"\xd6\x01\n" +
+	"\bimage_id\x18\x01 \x01(\x03R\aimageId\x12\x1d\n" +
+	"\n" +
+	"owner_type\x18\x02 \x01(\x03R\townerType\x12\x19\n" +
+	"\bowner_id\x18\x03 \x01(\x03R\aownerId\"\xd6\x01\n" +
 	"\n" +
 	"ImageProto\x12\x19\n" +
 	"\bimage_id\x18\x01 \x01(\x03R\aimageId\x12\x1d\n" +

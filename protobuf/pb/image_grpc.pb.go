@@ -27,12 +27,14 @@ const (
 // ImageServiceClient is the client API for ImageService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+//
+// ImageService 定义图像上传/下载服务
 type ImageServiceClient interface {
-	// 传统Unary RPC（获取元数据）
+	// GetImageInfo 获取图片元数据
 	GetImageInfo(ctx context.Context, in *ImageRequest, opts ...grpc.CallOption) (*ImageProto, error)
-	// 客户端流式上传（支持大文件分片）
+	// UploadImage 支持客户端流式上传（大文件分片）
 	UploadImage(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[ImageChunk, UploadResponse], error)
-	// 服务端流式下载（支持断点续传）
+	// DownloadImage 支持服务端流式下载（断点续传）
 	DownloadImage(ctx context.Context, in *ImageRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[ImageChunk], error)
 }
 
@@ -89,12 +91,14 @@ type ImageService_DownloadImageClient = grpc.ServerStreamingClient[ImageChunk]
 // ImageServiceServer is the server API for ImageService service.
 // All implementations must embed UnimplementedImageServiceServer
 // for forward compatibility.
+//
+// ImageService 定义图像上传/下载服务
 type ImageServiceServer interface {
-	// 传统Unary RPC（获取元数据）
+	// GetImageInfo 获取图片元数据
 	GetImageInfo(context.Context, *ImageRequest) (*ImageProto, error)
-	// 客户端流式上传（支持大文件分片）
+	// UploadImage 支持客户端流式上传（大文件分片）
 	UploadImage(grpc.ClientStreamingServer[ImageChunk, UploadResponse]) error
-	// 服务端流式下载（支持断点续传）
+	// DownloadImage 支持服务端流式下载（断点续传）
 	DownloadImage(*ImageRequest, grpc.ServerStreamingServer[ImageChunk]) error
 	mustEmbedUnimplementedImageServiceServer()
 }
