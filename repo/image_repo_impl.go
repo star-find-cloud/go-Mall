@@ -107,3 +107,17 @@ func (r *ImageRepositoryImpl) UpDate(ctx context.Context, image model.Image) err
 	}
 	return tx.Commit()
 }
+
+func (r *ImageRepositoryImpl) Delete(ctx context.Context, imageID int) error {
+	sqlStr := "delete from shop.images where imageID = ?;"
+	_, err := r.db.ExecContext(ctx, sqlStr, imageID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			applog.MySQLLogger.Warnf("image delete err: %v", err)
+			return fmt.Errorf("image delete err: %v", err)
+		}
+		applog.AppLogger.Errorf("image repo error: %v", err)
+		return fmt.Errorf("failed to get image: %w", err)
+	}
+	return nil
+}

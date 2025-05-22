@@ -4,10 +4,10 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"github.com/star-find-cloud/star-mall/internal/repo"
 	"github.com/star-find-cloud/star-mall/model"
 	"github.com/star-find-cloud/star-mall/pkg/logger"
 	proto "github.com/star-find-cloud/star-mall/protobuf/pb"
+	"github.com/star-find-cloud/star-mall/repo"
 	"github.com/star-find-cloud/star-mall/utils"
 	"github.com/tencentyun/cos-go-sdk-v5"
 	"sync"
@@ -126,14 +126,73 @@ func (s *OSSService) UploadImages(ctx context.Context, reqs []*proto.ImageProto)
 }
 
 func (s *OSSService) DownloadImage(ctx context.Context, req *proto.ImageRequest) (*proto.ImageProto, error) {
+	// image_id 获取图片信息
+	image, err := s.repo.GetByID(ctx, int(req.ImageId))
+	if err != nil {
+		logger.AppLogger.Errorf("failed to get image by ID %d: %v", req.ImageId, err)
+		return nil, fmt.Errorf("failed to get image: %w", err)
+	}
 
-	return nil, nil
+	// 从 OSS 下载图片数据
+	resp, err := s.oosClient.Object.Get(ctx, image.OssPath, nil)
+	if err != nil {
+		logger.AppLogger.Errorf("failed to download image from OSS (path: %s): %v", image.OssPath, err)
+		return nil, fmt.Errorf("failed to download image from OSS: %w", err)
+	}
+	defer resp.Body.Close()
+
+	// 读取图片内容到字节数组
+	var buffer bytes.Buffer
+	_, err = buffer.ReadFrom(resp.Body)
+	if err != nil {
+		logger.AppLogger.Errorf("failed to read image data (path: %s): %v", image.OssPath, err)
+		return nil, fmt.Errorf("failed to read image data: %w", err)
+	}
+
+	// 4. 构造 ImageProto 返回值
+	imageProto := &proto.ImageProto{
+		ImageId:   int64(image.ImageID),
+		OwnerType: image.OwnerType,
+		Data:      buffer.Bytes(),
+	}
+
+	return imageProto, nil
 }
 
-func (s *OSSService) DeleteImage(ctx context.Context, req *proto.ImageRequest) error {
+func (s *OSSService) DeleteImage(ctx context.Context, id int64) error {
+	image, err := s.repo.GetByID(ctx, int(id))
+	if err != nil {
+		logger.AppLogger.Errorf("failed to get image by ID %d: %v", id, err)
+		return fmt.Errorf("failed to get image: %w", err)
+	}
+
+	resp, err := s.oosClient.Object.Delete(ctx, image.OssPath)
+	if err != nil {
+		logger.AppLogger.Errorf("failed to delete image from OSS (path: %s): %v", image.OssPath, err)
+		return fmt.Errorf("failed to delete image from OSS: %w", err)
+	}
+	logger.AppLogger.Infof("delete image from OSS (path: %s): %v", image.OssPath, resp)
+	defer resp.Body.Close()
+
+	err = s.repo.Delete(ctx, int(id))
+	if err != nil {
+		logger.AppLogger.Errorf("failed to delete image from OSS (path: %s): %v", image.OssPath, err)
+		return fmt.Errorf("failed to delete image from OSS: %w", err)
+	}
 	return nil
 }
 
 func (s *OSSService) UpdateImage(ctx context.Context, req *proto.ImageProto) error {
+	imageID := req.ImageId
+
+	err := s.DeleteImage(ctx, imageID)
+	if err != nil {
+		return err
+	}
+
+	_, _, err = s.UploadImage(ctx, req)
+	if err != nil {
+		return err
+	}
 	return nil
 }

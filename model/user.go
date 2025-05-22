@@ -14,4 +14,5 @@ type User struct {
 	LastIP     string `db:"last_ip"`
 	ImageID    int64  `db:"image"` // uid
 	IsVip      bool   `db:"is_vip"`
+	RoleID     int64  `db:"role_id"`
 }

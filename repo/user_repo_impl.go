@@ -19,7 +19,7 @@ func NewUserRepositoryImpl(db *sqlx.DB) *UserRepositoryImpl {
 	return &UserRepositoryImpl{db: db}
 }
 
-func (r UserRepositoryImpl) GetByID(ctx context.Context, id int) (*model.User, error) {
+func (r UserRepositoryImpl) GetByID(ctx context.Context, id int64) (*model.User, error) {
 	var user *model.User
 	sqlStr := "select id,name,image,sex,last_ip,image,is_vip from shop.user where id = ? LIMIT 1;"
 
@@ -51,10 +51,10 @@ func (r UserRepositoryImpl) GetByEmail(ctx context.Context, email string) (*mode
 	return user, nil
 }
 
-func (r UserRepositoryImpl) Create(ctx context.Context, user *model.User) error {
+func (r UserRepositoryImpl) Create(ctx context.Context, user *model.User) (int64, error) {
 	sqlStr := "insert into shop.user (name,password,email,phone,sex,create_time, update_time, status, last_ip, image, is_vip) values (?,?,?,?,?,?,?,?,?,?,?)"
 
-	_, err := r.db.ExecContext(ctx, sqlStr,
+	result, err := r.db.ExecContext(ctx, sqlStr,
 		user.Name,
 		user.Password,
 		user.Email,
@@ -69,15 +69,19 @@ func (r UserRepositoryImpl) Create(ctx context.Context, user *model.User) error 
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			applog.MySQLLogger.Warnf("user creat err: %v", err)
-			return fmt.Errorf("user creat err: %v", err)
+			return 0, fmt.Errorf("user creat err: %v", err)
 		}
 		applog.AppLogger.Errorf("user repo error: %v", err)
-		return fmt.Errorf("failed to get user: %w", err)
+		return 0, fmt.Errorf("failed to get user: %w", err)
 	}
 
-	//id, _ := result.LastInsertId()
-	//user.ID = int(id)
-	return nil
+	id, err := result.LastInsertId()
+	if err != nil {
+		applog.AppLogger.Errorf("user repo error: %v", err)
+		return 0, fmt.Errorf("failed to get user: %w", err)
+	}
+
+	return id, nil
 }
 
 func (r UserRepositoryImpl) Update(ctx context.Context, user *model.User) error {
@@ -125,7 +129,7 @@ func (r UserRepositoryImpl) UpdatePasswd(ctx context.Context, user *model.User) 
 	return nil
 }
 
-func (r UserRepositoryImpl) Delete(ctx context.Context, id int) error {
+func (r UserRepositoryImpl) Delete(ctx context.Context, id int64) error {
 	sqlStr := "DELETE FROM shop.user WHERE id = ? "
 
 	_, err := r.db.ExecContext(ctx, sqlStr, id)

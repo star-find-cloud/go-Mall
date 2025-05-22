@@ -1,16 +1,15 @@
 package model
 
 type Cart struct {
-	ID             int64    `db:"id"`
-	Title          string   `db:"title"`
-	Price          float64  `db:"price"`
-	ProductVersion string   `db:"product_version"`
-	Number         int64    `db:"number"`
-	ProductGifts   []string `db:"product_gifts"`   // 赠品
-	ProductFitting string   `db:"product_fitting"` // 搭配
-	ProductColor   string   `db:"product_color"`
-	ProductImage   string   `db:"product_image"`
-	ProductAttr    string   `db:"product_attr"` // 属性
+	ID             int64   `db:"id"`
+	Title          string  `db:"title"`
+	Price          float64 `db:"price"`
+	ProductVersion string  `db:"product_version"`
+	Number         int64   `db:"number"`
+	ProductID      []int64 `db:"product_id"`
+	ProductImage   string  `db:"product_image"`
+	ProductAttr    string  `db:"product_attr"` // 属性
+	UserID         string  `db:"user_id"`
 }
 
 //// 验证购物车数据是否添加

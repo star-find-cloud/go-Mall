@@ -104,6 +104,20 @@ func ParsePathParamInt(c *gin.Context, paramName string) (int, error) {
 	return id, nil
 }
 
+func ParsePathParamInt64(c *gin.Context, paramName string) (int64, error) {
+	// 从 user 中获取对应的参数
+	strID := c.Param(paramName)
+	if strID == "" {
+		return 0, errors.New("missing path parameter: " + paramName)
+	}
+	// 将参数从 str 转换为 int
+	id, err := strconv.Atoi(strID)
+	if err != nil {
+		return 0, err
+	}
+	return int64(id), nil
+}
+
 func ExtractInt(s string) (int, error) {
 	// 匹配第一个连续的整数（支持负号）
 	re := regexp.MustCompile(`-?\d+`)

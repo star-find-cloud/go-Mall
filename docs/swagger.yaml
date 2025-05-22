@@ -41,6 +41,93 @@ definitions:
     - phone
     - sex
     type: object
+  model.User:
+    description: 用户模型
+    properties:
+      createTime:
+        type: integer
+      email:
+        type: string
+      id:
+        type: integer
+      imageID:
+        description: uid
+        type: integer
+      isVip:
+        type: boolean
+      lastIP:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      phone:
+        type: string
+      sex:
+        type: integer
+      status:
+        type: integer
+      updateTime:
+        type: integer
+    type: object
+  pb.ErrorCode:
+    enum:
+    - 0
+    - 1
+    - 2
+    - 3
+    - 4
+    type: integer
+    x-enum-varnames:
+    - ErrorCode_UNKNOWN
+    - ErrorCode_INVALID_CHUNK
+    - ErrorCode_UPLOAD_TIMEOUT
+    - ErrorCode_COS_CONNECTION_ERROR
+    - ErrorCode_COMPRESSION_FAILED
+  pb.ErrorResponse:
+    properties:
+      code:
+        $ref: '#/definitions/pb.ErrorCode'
+      message:
+        type: string
+    type: object
+  pb.ImageProto:
+    properties:
+      data:
+        items:
+          type: integer
+        type: array
+      image_id:
+        type: integer
+      is_compressed:
+        type: boolean
+      oss_path:
+        type: string
+      owner_id:
+        type: integer
+      owner_type:
+        type: integer
+      sha256_hash:
+        type: string
+    type: object
+  pb.ImagesProto:
+    properties:
+      images:
+        items:
+          $ref: '#/definitions/pb.ImageProto'
+        type: array
+    type: object
+  pb.UploadResponse:
+    properties:
+      chunk_count:
+        type: integer
+      oss_path:
+        type: string
+      sha256_hash:
+        type: string
+      success_count:
+        type: integer
+    type: object
   utils.ResponseError:
     properties:
       code:
@@ -52,6 +139,95 @@ definitions:
 info:
   contact: {}
 paths:
+  /api/v1/{owner_type}/{id}/image/upload:
+    post:
+      consumes:
+      - application/x-protobuf
+      description: 接收客户端上传的Protobuf格式图片数据，存储至OSS并返回存储路径
+      parameters:
+      - description: 图片数据
+        in: body
+        name: image
+        required: true
+        schema:
+          $ref: '#/definitions/pb.ImageProto'
+      produces:
+      - application/x-protobuf
+      responses:
+        "200":
+          description: OSS存储路径
+          schema:
+            $ref: '#/definitions/pb.UploadResponse'
+        "400":
+          description: 请求解析失败或上传超时
+          schema:
+            $ref: '#/definitions/pb.ErrorResponse'
+        "500":
+          description: 内部服务器错误
+          schema:
+            $ref: '#/definitions/pb.ErrorResponse'
+      summary: 上传图片到OSS
+      tags:
+      - Image
+  /api/v1/{owner_type}/{id}/images/upload:
+    post:
+      consumes:
+      - application/x-protobuf
+      description: 接收客户端上传的Protobuf格式图片数组，批量存储至OSS并返回存储路径列表
+      parameters:
+      - description: 图片数组数据
+        in: body
+        name: images
+        required: true
+        schema:
+          $ref: '#/definitions/pb.ImagesProto'
+      produces:
+      - application/x-protobuf
+      responses:
+        "200":
+          description: OSS存储路径列表
+          schema:
+            items:
+              $ref: '#/definitions/pb.UploadResponse'
+            type: array
+        "400":
+          description: 请求解析失败或上传超时
+          schema:
+            $ref: '#/definitions/pb.ErrorResponse'
+        "500":
+          description: 内部服务器错误
+          schema:
+            $ref: '#/definitions/pb.ErrorResponse'
+      summary: 批量上传图片到OSS
+      tags:
+      - Image
+  /api/v1/users/{id}:
+    get:
+      consumes:
+      - application/json
+      description: 获取用户信息
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ResponseError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.ResponseError'
+      summary: GetUser
   /api/v1/users/login:
     post:
       consumes:

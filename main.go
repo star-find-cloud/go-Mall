@@ -3,11 +3,11 @@ package main
 import (
 	"fmt"
 	"github.com/star-find-cloud/star-mall/handler"
-	"github.com/star-find-cloud/star-mall/internal/repo"
-	"github.com/star-find-cloud/star-mall/internal/service"
 	"github.com/star-find-cloud/star-mall/pkg/database"
 	"github.com/star-find-cloud/star-mall/pkg/oss"
+	repo2 "github.com/star-find-cloud/star-mall/repo"
 	"github.com/star-find-cloud/star-mall/routers"
+	service2 "github.com/star-find-cloud/star-mall/service"
 )
 
 func main() {
@@ -16,13 +16,13 @@ func main() {
 	ossClient := oss.GetCos()
 
 	fmt.Println("配置读取完成")
-	userRepo := repo.NewUserRepositoryImpl(db)
-	userService := service.NewUserService(userRepo)
+	userRepo := repo2.NewUserRepositoryImpl(db)
+	userService := service2.NewUserService(userRepo)
 	userHandler := handler.NewUserHandler(userService)
 
 	fmt.Println("配置读取完成")
-	imageRepo := repo.NewImageRepositoryImpl(db)
-	imageService := service.NewOSSService(ossClient, imageRepo)
+	imageRepo := repo2.NewImageRepositoryImpl(db)
+	imageService := service2.NewOSSService(ossClient, imageRepo)
 	imageHandler := handler.NewImageHandler(imageService)
 
 	fmt.Println("配置读取完成")

@@ -3,8 +3,8 @@ package handler
 import (
 	"context"
 	"github.com/gin-gonic/gin"
-	"github.com/star-find-cloud/star-mall/internal/service"
 	"github.com/star-find-cloud/star-mall/pkg/logger"
+	"github.com/star-find-cloud/star-mall/service"
 	"github.com/star-find-cloud/star-mall/utils"
 	"net/http"
 )
@@ -13,13 +13,14 @@ type UserHandler struct {
 	UserService *service.UserService
 }
 type LoginRequest struct {
-	ID       int    `json:"id,omitempty"`
+	ID       int64  `json:"id,omitempty"`
 	Email    string `json:"email,omitempty"`
 	Password string `json:"password" binding:"required,min=6"`
 }
 
 type LoginResponse struct {
-	Token string `json:"token"`
+	Token  string `json:"token"`
+	UserID int64  `json:"userId"`
 }
 
 type RegisterRequest struct {
@@ -45,7 +46,7 @@ func NewUserHandler(userService *service.UserService) *UserHandler {
 // @Failure 404 {object} utils.ResponseError
 // @Router /api/v1/users/{id} [get]`
 func (h *UserHandler) GetUser(c *gin.Context) {
-	id, err := utils.ParsePathParamInt(c, "id")
+	id, err := utils.ParsePathParamInt64(c, "id")
 	if err != nil {
 		utils.RespondError(c, http.StatusBadRequest, "invalid product id", err)
 		return
@@ -103,6 +104,7 @@ func (h *UserHandler) Login(c *gin.Context) {
 
 	utils.RespondJSON(c, http.StatusOK, LoginResponse{
 		token,
+		req.ID,
 	})
 }
 
@@ -122,7 +124,7 @@ func (h *UserHandler) Register(c *gin.Context) {
 		return
 	}
 
-	token, err := h.UserService.Register(c.Request.Context(), req.Name, req.Password, req.Email, req.Phone, req.Sex)
+	token, id, err := h.UserService.Register(c.Request.Context(), req.Name, req.Password, req.Email, req.Phone, req.Sex)
 	if err != nil {
 		logger.AppLogger.Errorf("register failed: %v", err)
 		utils.RespondError(c, http.StatusInternalServerError, "register failed", err)
@@ -131,5 +133,6 @@ func (h *UserHandler) Register(c *gin.Context) {
 
 	utils.RespondJSON(c, http.StatusOK, LoginResponse{
 		token,
+		id,
 	})
 }

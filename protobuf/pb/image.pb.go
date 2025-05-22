@@ -230,6 +230,50 @@ func (x *ImageProto) GetData() []byte {
 	return nil
 }
 
+type ImagesProto struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Images        []*ImageProto          `protobuf:"bytes,1,rep,name=images,proto3" json:"images,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ImagesProto) Reset() {
+	*x = ImagesProto{}
+	mi := &file_image_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ImagesProto) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ImagesProto) ProtoMessage() {}
+
+func (x *ImagesProto) ProtoReflect() protoreflect.Message {
+	mi := &file_image_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ImagesProto.ProtoReflect.Descriptor instead.
+func (*ImagesProto) Descriptor() ([]byte, []int) {
+	return file_image_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *ImagesProto) GetImages() []*ImageProto {
+	if x != nil {
+		return x.Images
+	}
+	return nil
+}
+
 type UploadResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	OssPath       string                 `protobuf:"bytes,1,opt,name=oss_path,json=ossPath,proto3" json:"oss_path,omitempty"`
@@ -242,7 +286,7 @@ type UploadResponse struct {
 
 func (x *UploadResponse) Reset() {
 	*x = UploadResponse{}
-	mi := &file_image_proto_msgTypes[2]
+	mi := &file_image_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -254,7 +298,7 @@ func (x *UploadResponse) String() string {
 func (*UploadResponse) ProtoMessage() {}
 
 func (x *UploadResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_image_proto_msgTypes[2]
+	mi := &file_image_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -267,7 +311,7 @@ func (x *UploadResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UploadResponse.ProtoReflect.Descriptor instead.
 func (*UploadResponse) Descriptor() ([]byte, []int) {
-	return file_image_proto_rawDescGZIP(), []int{2}
+	return file_image_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *UploadResponse) GetOssPath() string {
@@ -311,7 +355,7 @@ type ImageChunk struct {
 
 func (x *ImageChunk) Reset() {
 	*x = ImageChunk{}
-	mi := &file_image_proto_msgTypes[3]
+	mi := &file_image_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -323,7 +367,7 @@ func (x *ImageChunk) String() string {
 func (*ImageChunk) ProtoMessage() {}
 
 func (x *ImageChunk) ProtoReflect() protoreflect.Message {
-	mi := &file_image_proto_msgTypes[3]
+	mi := &file_image_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -336,7 +380,7 @@ func (x *ImageChunk) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ImageChunk.ProtoReflect.Descriptor instead.
 func (*ImageChunk) Descriptor() ([]byte, []int) {
-	return file_image_proto_rawDescGZIP(), []int{3}
+	return file_image_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *ImageChunk) GetContent() []byte {
@@ -378,7 +422,7 @@ type ErrorResponse struct {
 
 func (x *ErrorResponse) Reset() {
 	*x = ErrorResponse{}
-	mi := &file_image_proto_msgTypes[4]
+	mi := &file_image_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -390,7 +434,7 @@ func (x *ErrorResponse) String() string {
 func (*ErrorResponse) ProtoMessage() {}
 
 func (x *ErrorResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_image_proto_msgTypes[4]
+	mi := &file_image_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -403,7 +447,7 @@ func (x *ErrorResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ErrorResponse.ProtoReflect.Descriptor instead.
 func (*ErrorResponse) Descriptor() ([]byte, []int) {
-	return file_image_proto_rawDescGZIP(), []int{4}
+	return file_image_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *ErrorResponse) GetCode() ErrorCode {
@@ -440,7 +484,9 @@ const file_image_proto_rawDesc = "" +
 	"\vsha256_hash\x18\x05 \x01(\tR\n" +
 	"sha256Hash\x12#\n" +
 	"\ris_compressed\x18\x06 \x01(\bR\fisCompressed\x12\x12\n" +
-	"\x04data\x18\a \x01(\fR\x04data\"\x92\x01\n" +
+	"\x04data\x18\a \x01(\fR\x04data\"8\n" +
+	"\vImagesProto\x12)\n" +
+	"\x06images\x18\x01 \x03(\v2\x11.image.ImageProtoR\x06images\"\x92\x01\n" +
 	"\x0eUploadResponse\x12\x19\n" +
 	"\boss_path\x18\x01 \x01(\tR\aossPath\x12\x1f\n" +
 	"\vsha256_hash\x18\x02 \x01(\tR\n" +
@@ -481,28 +527,30 @@ func file_image_proto_rawDescGZIP() []byte {
 }
 
 var file_image_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_image_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_image_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_image_proto_goTypes = []any{
 	(ErrorCode)(0),         // 0: image.ErrorCode
 	(*ImageRequest)(nil),   // 1: image.ImageRequest
 	(*ImageProto)(nil),     // 2: image.ImageProto
-	(*UploadResponse)(nil), // 3: image.UploadResponse
-	(*ImageChunk)(nil),     // 4: image.ImageChunk
-	(*ErrorResponse)(nil),  // 5: image.ErrorResponse
+	(*ImagesProto)(nil),    // 3: image.ImagesProto
+	(*UploadResponse)(nil), // 4: image.UploadResponse
+	(*ImageChunk)(nil),     // 5: image.ImageChunk
+	(*ErrorResponse)(nil),  // 6: image.ErrorResponse
 }
 var file_image_proto_depIdxs = []int32{
-	0, // 0: image.ErrorResponse.code:type_name -> image.ErrorCode
-	1, // 1: image.ImageService.GetImageInfo:input_type -> image.ImageRequest
-	4, // 2: image.ImageService.UploadImage:input_type -> image.ImageChunk
-	1, // 3: image.ImageService.DownloadImage:input_type -> image.ImageRequest
-	2, // 4: image.ImageService.GetImageInfo:output_type -> image.ImageProto
-	3, // 5: image.ImageService.UploadImage:output_type -> image.UploadResponse
-	4, // 6: image.ImageService.DownloadImage:output_type -> image.ImageChunk
-	4, // [4:7] is the sub-list for method output_type
-	1, // [1:4] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	2, // 0: image.ImagesProto.images:type_name -> image.ImageProto
+	0, // 1: image.ErrorResponse.code:type_name -> image.ErrorCode
+	1, // 2: image.ImageService.GetImageInfo:input_type -> image.ImageRequest
+	5, // 3: image.ImageService.UploadImage:input_type -> image.ImageChunk
+	1, // 4: image.ImageService.DownloadImage:input_type -> image.ImageRequest
+	2, // 5: image.ImageService.GetImageInfo:output_type -> image.ImageProto
+	4, // 6: image.ImageService.UploadImage:output_type -> image.UploadResponse
+	5, // 7: image.ImageService.DownloadImage:output_type -> image.ImageChunk
+	5, // [5:8] is the sub-list for method output_type
+	2, // [2:5] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_image_proto_init() }
@@ -516,7 +564,7 @@ func file_image_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_image_proto_rawDesc), len(file_image_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   5,
+			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

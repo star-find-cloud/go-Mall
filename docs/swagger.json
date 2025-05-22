@@ -77,6 +77,142 @@
                     }
                 }
             }
+        },
+        "/api/v1/users/{id}": {
+            "get": {
+                "description": "获取用户信息",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "GetUser",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.User"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ResponseError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/{owner_type}/{id}/image/upload": {
+            "post": {
+                "description": "接收客户端上传的Protobuf格式图片数据，存储至OSS并返回存储路径",
+                "consumes": [
+                    "application/x-protobuf"
+                ],
+                "produces": [
+                    "application/x-protobuf"
+                ],
+                "tags": [
+                    "Image"
+                ],
+                "summary": "上传图片到OSS",
+                "parameters": [
+                    {
+                        "description": "图片数据",
+                        "name": "image",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/pb.ImageProto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OSS存储路径",
+                        "schema": {
+                            "$ref": "#/definitions/pb.UploadResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "请求解析失败或上传超时",
+                        "schema": {
+                            "$ref": "#/definitions/pb.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "内部服务器错误",
+                        "schema": {
+                            "$ref": "#/definitions/pb.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/{owner_type}/{id}/images/upload": {
+            "post": {
+                "description": "接收客户端上传的Protobuf格式图片数组，批量存储至OSS并返回存储路径列表",
+                "consumes": [
+                    "application/x-protobuf"
+                ],
+                "produces": [
+                    "application/x-protobuf"
+                ],
+                "tags": [
+                    "Image"
+                ],
+                "summary": "批量上传图片到OSS",
+                "parameters": [
+                    {
+                        "description": "图片数组数据",
+                        "name": "images",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/pb.ImagesProto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OSS存储路径列表",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/pb.UploadResponse"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "请求解析失败或上传超时",
+                        "schema": {
+                            "$ref": "#/definitions/pb.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "内部服务器错误",
+                        "schema": {
+                            "$ref": "#/definitions/pb.ErrorResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -136,6 +272,134 @@
                     "type": "string"
                 },
                 "sex": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.User": {
+            "description": "用户模型",
+            "type": "object",
+            "properties": {
+                "createTime": {
+                    "type": "integer"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "imageID": {
+                    "description": "uid",
+                    "type": "integer"
+                },
+                "isVip": {
+                    "type": "boolean"
+                },
+                "lastIP": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "sex": {
+                    "type": "integer"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "updateTime": {
+                    "type": "integer"
+                }
+            }
+        },
+        "pb.ErrorCode": {
+            "type": "integer",
+            "enum": [
+                0,
+                1,
+                2,
+                3,
+                4
+            ],
+            "x-enum-varnames": [
+                "ErrorCode_UNKNOWN",
+                "ErrorCode_INVALID_CHUNK",
+                "ErrorCode_UPLOAD_TIMEOUT",
+                "ErrorCode_COS_CONNECTION_ERROR",
+                "ErrorCode_COMPRESSION_FAILED"
+            ]
+        },
+        "pb.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/pb.ErrorCode"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "pb.ImageProto": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "image_id": {
+                    "type": "integer"
+                },
+                "is_compressed": {
+                    "type": "boolean"
+                },
+                "oss_path": {
+                    "type": "string"
+                },
+                "owner_id": {
+                    "type": "integer"
+                },
+                "owner_type": {
+                    "type": "integer"
+                },
+                "sha256_hash": {
+                    "type": "string"
+                }
+            }
+        },
+        "pb.ImagesProto": {
+            "type": "object",
+            "properties": {
+                "images": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/pb.ImageProto"
+                    }
+                }
+            }
+        },
+        "pb.UploadResponse": {
+            "type": "object",
+            "properties": {
+                "chunk_count": {
+                    "type": "integer"
+                },
+                "oss_path": {
+                    "type": "string"
+                },
+                "sha256_hash": {
+                    "type": "string"
+                },
+                "success_count": {
                     "type": "integer"
                 }
             }

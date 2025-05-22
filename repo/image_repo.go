@@ -11,4 +11,5 @@ type ImageRepository interface {
 	GetByOwner(ctx context.Context, ownerType, ownerID string) ([]*model.Image, error)
 	GetByHash(ctx context.Context, hash string) (*model.Image, error)
 	UpDate(ctx context.Context, image model.Image) error
+	Delete(ctx context.Context, imageID int) error
 }
