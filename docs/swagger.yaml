@@ -1,0 +1,1947 @@
+basePath: /api/v1
+definitions:
+  domain.Cart:
+    properties:
+      cartItems:
+        items:
+          $ref: '#/definitions/domain.CartItemVO'
+        type: array
+      id:
+        type: integer
+      userID:
+        type: integer
+    type: object
+  domain.CartItemVO:
+    properties:
+      cartID:
+        type: integer
+      createPrice:
+        type: number
+      nowPrice:
+        type: number
+      productID:
+        type: integer
+      productImageOss:
+        type: string
+      productTitle:
+        type: string
+      quantity:
+        description: 商品数量
+        type: integer
+      specs:
+        additionalProperties: true
+        description: 商品规格
+        type: object
+    type: object
+  domain.Image:
+    properties:
+      contentType:
+        type: string
+      filePath:
+        type: string
+      imageID:
+        type: integer
+      isCompressed:
+        description: 是否压缩
+        type: boolean
+      sha256Hash:
+        type: string
+    type: object
+  domain.Inventory:
+    properties:
+      availableStock:
+        description: 可用库存
+        type: integer
+      createAt:
+        type: integer
+      lowStockThreshold:
+        description: 低库存阈值
+        type: integer
+      productID:
+        type: integer
+      reservedStock:
+        description: 已锁定库存
+        type: integer
+      updateAt:
+        type: integer
+      version:
+        description: 乐观锁版本
+        type: integer
+    type: object
+  domain.Merchant:
+    properties:
+      businessTypes:
+        description: 店铺经营类型
+        items:
+          type: integer
+        type: array
+      categoryId:
+        description: 店铺分类ID
+        example: 100
+        type: integer
+      createAt:
+        example: 1609459200
+        type: integer
+      deleteAt:
+        example: 0
+        type: integer
+      email:
+        example: contact@starelectronics.com
+        type: string
+      id:
+        example: 12345
+        type: integer
+      imageId:
+        description: 店铺图片ID
+        example: 2001
+        type: integer
+      licenseImageId:
+        description: 营业执照图片ID
+        example: 1001
+        type: integer
+      name:
+        example: Star Electronics
+        type: string
+      oldName:
+        description: 曾用名
+        example: Star Tech
+        type: string
+      phone:
+        example: "+8613800138000"
+        type: string
+      realId:
+        description: 身份证号
+        example: "310000199001011234"
+        type: string
+      realName:
+        description: 法人真实姓名
+        example: 张三
+        type: string
+      score:
+        description: 商户评分
+        example: 4.8
+        type: number
+      status:
+        example: 1
+        type: integer
+      tag:
+        description: 商户标签
+        example: 1
+        type: integer
+      updateAt:
+        example: 1609459200
+        type: integer
+      userId:
+        example: 67890
+        type: integer
+    type: object
+  domain.OrderItem:
+    properties:
+      itemID:
+        type: integer
+      orderID:
+        type: integer
+      productID:
+        type: integer
+      productTitle:
+        type: string
+      quantity:
+        description: 数量
+        type: integer
+      subtotal:
+        description: 小计
+        type: integer
+      unitPrice:
+        description: 单价
+        type: integer
+    type: object
+  domain.Product:
+    properties:
+      attr:
+        description: 商品属性
+        type: string
+      bookingTime:
+        description: 预售时间
+        type: integer
+      brand:
+        description: 品牌
+        type: string
+      cateID:
+        description: 小类ID
+        type: integer
+      clickCount:
+        description: 点击量
+        type: integer
+      content:
+        description: 商品内容
+        type: string
+      createdAt:
+        description: 创建时间
+        type: integer
+      deletedAt:
+        description: 删除时间
+        type: integer
+      desc:
+        description: 商品描述
+        type: string
+      id:
+        type: integer
+      isBest:
+        description: 是否精品
+        type: boolean
+      isBooking:
+        description: 是否预售
+        type: boolean
+      isDeleted:
+        description: 是否删除
+        type: integer
+      isHot:
+        description: 是否热门
+        type: integer
+      isNew:
+        description: 是否新品
+        type: boolean
+      keywords:
+        description: 商品关键词
+        type: string
+      marketPrice:
+        description: 市场价
+        type: number
+      merchantID:
+        description: 商家ID
+        type: integer
+      price:
+        description: 价格
+        type: number
+      productNum:
+        description: 商品数量
+        type: integer
+      productSn:
+        description: 商品编号
+        type: string
+      productTypeID:
+        description: 商品大类ID
+        type: integer
+      purchaseCount:
+        description: 购买量
+        type: integer
+      sort:
+        description: 排序权重
+        type: integer
+      specs:
+        description: 商品规格
+        type: string
+      status:
+        type: integer
+      subTitle:
+        type: string
+      title:
+        description: ImageID       string  `db:"image_id"`
+        type: string
+      updatedAt:
+        description: 更新时间
+        type: integer
+      version:
+        description: 商品版本
+        type: string
+    type: object
+  domain.User:
+    description: 用户模型
+    properties:
+      ID:
+        type: integer
+      createTime:
+        type: integer
+      deleteTime:
+        type: integer
+      email:
+        type: string
+      imageID:
+        description: uid
+        type: integer
+      isVip:
+        type: boolean
+      lastIP:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      phone:
+        type: string
+      role:
+        description: 规则ID, 用于分别用户类型
+        type: integer
+      sex:
+        type: integer
+      status:
+        type: integer
+      tags:
+        items:
+          type: integer
+        type: array
+      updateTime:
+        type: integer
+    type: object
+  handler.AddProductRequest:
+    properties:
+      cartId:
+        description: '@Description 购物车ID'
+        type: integer
+      createPrice:
+        description: '@Description 商品加入购物车时价格'
+        type: number
+      productId:
+        description: '@Description 商品ID'
+        type: integer
+      productImageOss:
+        description: '@Description 商品图片Oss路径'
+        type: string
+      productTitle:
+        description: '@Description 商品标题'
+        type: string
+      quantity:
+        description: '@Description 商品数量'
+        type: integer
+      specs:
+        additionalProperties: true
+        description: '@Description 商品规格'
+        type: object
+    required:
+    - cartId
+    - createPrice
+    - productId
+    - productImageOss
+    - productTitle
+    - quantity
+    - specs
+    type: object
+  handler.CartCreateRequest:
+    properties:
+      id:
+        description: '@Description 用户ID'
+        type: integer
+    required:
+    - id
+    type: object
+  handler.CartCreateResponse:
+    properties:
+      id:
+        description: '@Description 购物车ID'
+        type: integer
+      msg:
+        description: '@Description 消息'
+        type: string
+    type: object
+  handler.CreateOrderRequest:
+    properties:
+      pay_price:
+        description: '@Description: 支付金额'
+        type: integer
+      product_id:
+        description: '@Description: 商品ID'
+        type: integer
+      product_title:
+        description: '@Description: 商品名称'
+        type: string
+      quantity:
+        description: '@Description: 商品数量'
+        type: integer
+      subtotal:
+        description: '@Description: 商品小计'
+        type: integer
+      total_price:
+        description: '@Description: 总金额'
+        type: integer
+      unit_price:
+        description: '@Description: 商品单价'
+        type: integer
+    type: object
+  handler.CreateOrderResponse:
+    properties:
+      created_at:
+        description: '@Description: 创建时间'
+        type: integer
+      id:
+        description: '@Description: 订单ID'
+        type: integer
+    type: object
+  handler.DeleteRequest:
+    properties:
+      email:
+        description: '@Description 邮箱'
+        type: string
+      verifyCode:
+        description: '@Description 验证码'
+        type: string
+    required:
+    - email
+    - verifyCode
+    type: object
+  handler.ForgetPasswordRequest:
+    properties:
+      email:
+        description: |-
+          @Description 邮箱
+          @Required true
+          @Example "<EMAIL>"
+        type: string
+      newPassword:
+        description: |-
+          @Description 新密码
+          @Required true
+          @Example "<PASSWORD>"
+        minLength: 6
+        type: string
+      verifyCode:
+        description: |-
+          @Description 验证码
+          @Required true
+          @Example "123456"
+        type: string
+    required:
+    - email
+    - newPassword
+    - verifyCode
+    type: object
+  handler.GetImageRequest:
+    properties:
+      id:
+        description: '@Description 图片ID'
+        type: integer
+    type: object
+  handler.HealthCheckResponse:
+    properties:
+      hostname:
+        type: string
+      status:
+        type: string
+    type: object
+  handler.InventoryCreateRequest:
+    properties:
+      count:
+        description: '@Describe: 库存数量'
+        type: integer
+      low_stock_threshold:
+        description: '@Describe: 低库存阈值'
+        type: integer
+      product_id:
+        description: '@Describe: 商品ID'
+        type: integer
+    type: object
+  handler.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        minLength: 6
+        type: string
+      userID:
+        type: string
+    required:
+    - password
+    type: object
+  handler.LoginResponse:
+    properties:
+      role:
+        type: integer
+      token:
+        type: string
+      userId:
+        type: integer
+    type: object
+  handler.MailRequest:
+    properties:
+      mail:
+        type: string
+    type: object
+  handler.MerchantRegisterRequest:
+    properties:
+      businessType:
+        description: |-
+          BusinessType represents the categories of business the merchant operates in
+          Required: true
+          Example: [1, 3, 5]
+        items:
+          type: integer
+        type: array
+      email:
+        description: |-
+          Email is the merchant's contact email address
+          Required: true
+          Example: merchant@example.com
+        type: string
+      name:
+        description: |-
+          Name is the merchant's business name
+          Required: true
+          Min length: 2
+          Max length: 32
+        maxLength: 32
+        minLength: 2
+        type: string
+      password:
+        description: |-
+          Password for merchant account
+          Required: true
+          Min length: 8
+          Format: password
+        minLength: 8
+        type: string
+      phone:
+        description: |-
+          Phone is the merchant's contact phone number in E.164 format
+          Required: true
+          Example: +8613800138000
+        type: string
+      realID:
+        description: |-
+          RealID is the ID card number of the merchant's representative
+          Required: true
+          Length: 18
+        maxLength: 18
+        minLength: 18
+        type: string
+      realName:
+        description: |-
+          RealName is the legal name of the merchant's representative
+          Required: true
+          Min length: 2
+          Max length: 32
+        maxLength: 32
+        minLength: 2
+        type: string
+      verificationCode:
+        description: 用户收到的邮箱验证码, 用于验证用户身份
+        type: string
+    required:
+    - businessType
+    - email
+    - name
+    - password
+    - phone
+    - realID
+    - realName
+    - verificationCode
+    type: object
+  handler.MerchantRegisterResponse:
+    properties:
+      code:
+        description: HTTP status code
+        example: 201
+        type: integer
+      email:
+        description: Email 邮箱地址
+        example: merchant@example.com
+        type: string
+      merchantId:
+        description: 商家ID
+        example: 12345
+        type: integer
+      phone:
+        description: Phone 商家店铺电话
+        example: "+8613800138000"
+        type: string
+      uploadToken:
+        description: UploadToken 后续传输图片所需的 临时用户凭证
+        example: <KEY>
+        type: string
+      userId:
+        description: 商家对应的 用户ID
+        example: 67890
+        type: integer
+    type: object
+  handler.MerchantUpdateRequest:
+    description: 商家更新请求
+    properties:
+      businessType:
+        description: BusinessType 营业类型
+        items:
+          type: integer
+        type: array
+      cateId:
+        description: CateID 商家店铺分类
+        type: integer
+      email:
+        description: Email 商家店铺邮箱
+        type: string
+      name:
+        description: |-
+          Name 商家店铺名称
+          Required: true
+          Min length: 2
+          Max length: 32
+        maxLength: 32
+        minLength: 2
+        type: string
+      phone:
+        description: Phone 商家店铺电话
+        type: string
+    required:
+    - businessType
+    - cateId
+    - email
+    - name
+    - phone
+    type: object
+  handler.OrderGetResponse:
+    properties:
+      createdAt:
+        description: '@Description: 创建时间'
+        type: integer
+      id:
+        description: '@Description: 订单ID'
+        type: integer
+      orderItems:
+        allOf:
+        - $ref: '#/definitions/domain.OrderItem'
+        description: '@Description: 订单项'
+      orderStatus:
+        description: '@Description: 订单状态'
+        type: string
+      payPrice:
+        description: '@Description: 支付金额'
+        type: integer
+      paymentID:
+        description: '@Description: 支付方式ID'
+        type: integer
+      shippingID:
+        description: '@Description: 收货地址ID'
+        type: integer
+      totalPrice:
+        description: '@Description: 总金额'
+        type: integer
+      updatedAt:
+        description: '@Description: 更新时间'
+        type: integer
+      userID:
+        description: '@Description: 用户ID'
+        type: integer
+    type: object
+  handler.ProductCreateRequest:
+    properties:
+      attr:
+        description: '@Description 商品属性'
+        type: string
+      bookingTime:
+        description: '@Description 预售时间'
+        type: integer
+      brand:
+        description: '@Description 品牌'
+        type: string
+      cateID:
+        description: '@Description 商品分类ID'
+        type: integer
+      content:
+        description: '@Description 商品内容'
+        type: string
+      desc:
+        description: '@Description 商品描述'
+        type: string
+      image_id:
+        description: '@Description 商品图片id数组'
+        type: string
+      isBooking:
+        description: '@Description 是否预售'
+        type: boolean
+      keywords:
+        description: '@Description 关键字'
+        type: string
+      marketPrice:
+        description: '@Description 商品市场价'
+        type: number
+      price:
+        description: '@Description 商品价格'
+        type: number
+      productTypeID:
+        description: '@Description 商品大类ID'
+        type: integer
+      sn:
+        description: '@Description 商品编号'
+        type: string
+      specs:
+        description: '@Description 商品规格'
+        type: string
+      subTitle:
+        description: '@Description 商品副标题'
+        type: string
+      title:
+        description: '@Description 商品名称'
+        type: string
+      version:
+        description: '@Description 商品版本'
+        type: string
+    type: object
+  handler.ProductCreateResponse:
+    description: 创建商品响应体
+    properties:
+      code:
+        description: '@Description 状态码'
+        type: integer
+      id:
+        description: '@Description 商品ID'
+        type: integer
+      message:
+        description: '@Description 消息'
+        type: string
+    type: object
+  handler.ProductUpdateRequest:
+    description: 更新商品请求体
+    properties:
+      attr:
+        description: '@Description 属性'
+        type: string
+      booking_time:
+        description: '@Description 预售时间'
+        type: integer
+      cate_id:
+        description: '@Description 分类ID'
+        type: integer
+      content:
+        description: '@Description 内容'
+        type: string
+      desc:
+        description: '@Description 描述'
+        type: string
+      id:
+        description: '@Description 商品ID'
+        type: integer
+      isBooking:
+        description: '@Description 是否预售'
+        type: boolean
+      keywords:
+        description: '@Description 关键字'
+        type: string
+      market_price:
+        description: '@Description 市场价'
+        type: number
+      price:
+        description: '@Description 价格'
+        type: number
+      product_sn:
+        description: '@Description 商品编号'
+        type: string
+      product_type_id:
+        description: '@Description 商品类型ID'
+        type: integer
+      sub_title:
+        description: '@Description 子标题'
+        type: string
+      title:
+        description: '@Description 标题'
+        type: string
+    type: object
+  handler.SearchProductRequest:
+    description: 搜索商品请求体
+    properties:
+      msg:
+        type: string
+      offset:
+        type: integer
+    type: object
+  handler.SuggestProductRequest:
+    description: 商品推荐请求体
+    properties:
+      isChat:
+        description: '@Description 是否启用 r1 模型, true: 使用 v3 模型, false: 使用 r1 深度思考模型'
+        type: boolean
+      msg:
+        description: '@Description 商品搜索关键词(用户登录请求ai接口忽略该参数)'
+        type: string
+    type: object
+  handler.UpdatePasswordRequest:
+    properties:
+      email:
+        description: |-
+          @Description 邮箱
+          @Required true
+          @Example "<EMAIL>"
+        type: string
+      newPassword:
+        description: |-
+          @Description 新密码
+          @Required true
+          @Example "<PASSWORD>"
+        minLength: 6
+        type: string
+      oldPassword:
+        description: |-
+          @Description 原密码
+          @Required true
+          @Example "<PASSWORD>"
+        minLength: 6
+        type: string
+      verifyCode:
+        description: |-
+          @Description 验证码
+          @Required true
+          @Example "12AB56"
+        type: string
+    required:
+    - email
+    - newPassword
+    - oldPassword
+    - verifyCode
+    type: object
+  handler.UpdateRequest:
+    properties:
+      email:
+        description: |-
+          @Description 邮箱
+          @Required false
+          @Example "example@mail.com"
+        type: string
+      name:
+        description: |-
+          @Description 用户名
+          @Required false
+          @Example "张三"
+        maxLength: 32
+        minLength: 2
+        type: string
+      phone:
+        description: |-
+          @Description 手机号
+          @Required false
+          @Example "+8613800138000"
+        type: string
+      sex:
+        description: |-
+          @Description 性别(203:未知 201:男 202:女)
+          @Required false
+          @Enum 201 202 203
+          @Example 1
+        enum:
+        - 0
+        - 1
+        - 2
+        type: integer
+    type: object
+  handler.UploadImageResponse:
+    description: 图片上传响应体
+    properties:
+      filePath:
+        description: '@Description 图片路径'
+        type: string
+      imageID:
+        description: '@Description 图片ID'
+        type: integer
+      message:
+        description: '@Description 返回消息'
+        type: string
+    type: object
+  handler.UserRegisterRequest:
+    properties:
+      email:
+        type: string
+      name:
+        maxLength: 32
+        minLength: 2
+        type: string
+      password:
+        minLength: 8
+        type: string
+      phone:
+        type: string
+      sex:
+        type: integer
+      verificationCode:
+        type: string
+    required:
+    - email
+    - name
+    - password
+    - phone
+    - sex
+    type: object
+  utils.ResponseError:
+    properties:
+      code:
+        type: integer
+      error: {}
+      message:
+        type: string
+    type: object
+host: localhost:9090
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is the API documentation for Star Mall service.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Star Mall API
+  version: "1.0"
+paths:
+  /api/v1/cart/{id}:
+    get:
+      consumes:
+      - application/json
+      description: 通过购物车ID获取用户购物车
+      parameters:
+      - description: 购物车ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Cart'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: 通过购物车ID获取用户购物车
+      tags:
+      - 购物车
+  /api/v1/cart/add:
+    post:
+      consumes:
+      - application/json
+      description: 向购物车添加商品
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 购物车ID
+        in: body
+        name: id
+        required: true
+        schema:
+          $ref: '#/definitions/handler.AddProductRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: 向购物车添加商品
+      tags:
+      - 购物车
+  /api/v1/cart/create:
+    post:
+      consumes:
+      - application/json
+      description: 创建用户购物车
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 用户ID
+        in: body
+        name: id
+        required: true
+        schema:
+          $ref: '#/definitions/handler.CartCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.CartCreateResponse'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: 创建用户购物车
+      tags:
+      - 购物车
+  /api/v1/cart/user/{id}:
+    get:
+      consumes:
+      - application/json
+      description: 通过用户ID获取用户购物车
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 用户ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Cart'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: 通过用户ID获取用户购物车
+      tags:
+      - 购物车
+  /api/v1/deepseek/search:
+    post:
+      consumes:
+      - application/json
+      description: 根据搜索关键词推荐商品(sse 响应)
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 请求体
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.SuggestProductRequest'
+      produces:
+      - text/event-stream
+      responses:
+        "200":
+          description: 'data: <message>\n\n'
+          schema:
+            type: string
+        "400":
+          description: deepseek 生成信息失败
+          schema:
+            type: string
+        "401":
+          description: invalid token claims
+          schema:
+            type: string
+        "404":
+          description: 请求错误
+          schema:
+            type: string
+        "500":
+          description: 解析请求体失败
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 根据搜索关键词推荐商品
+      tags:
+      - deepseek
+  /api/v1/deepseek/suggest:
+    post:
+      consumes:
+      - application/json
+      description: 根据用户标签推荐商品(sse协议)
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 请求体
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.SuggestProductRequest'
+      produces:
+      - text/event-stream
+      responses:
+        "200":
+          description: 'data: <message>\n\n'
+          schema:
+            type: string
+        "400":
+          description: deepseek 生成信息失败
+          schema:
+            type: string
+        "401":
+          description: invalid token claims
+          schema:
+            type: string
+        "404":
+          description: 请求错误
+          schema:
+            type: string
+        "500":
+          description: 解析请求体失败
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 根据用户标签推荐商品
+      tags:
+      - deepseek
+  /api/v1/health-check:
+    get:
+      consumes:
+      - application/json
+      description: 检查后端是否正常运行
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.HealthCheckResponse'
+      summary: 健康检查
+  /api/v1/image/getImage:
+    get:
+      consumes:
+      - application/json
+      description: 获取图片
+      parameters:
+      - description: image
+        in: body
+        name: image
+        required: true
+        schema:
+          $ref: '#/definitions/handler.GetImageRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: get successfully
+          schema:
+            $ref: '#/definitions/domain.Image'
+        "401":
+          description: 没有权限
+          schema:
+            type: string
+        "500":
+          description: 服务器错误
+          schema:
+            type: string
+      summary: GetImage 获取图片
+      tags:
+      - Image
+  /api/v1/image/upload:
+    post:
+      consumes:
+      - application/json
+      description: 图片上传
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.UploadImageResponse'
+        "401":
+          description: 没有权限
+          schema:
+            type: string
+        "500":
+          description: 服务器错误
+          schema:
+            type: string
+      summary: 图片上传
+      tags:
+      - Image
+  /api/v1/inventory/{id}:
+    get:
+      consumes:
+      - application/json
+      description: 获取库存
+      parameters:
+      - description: inventory id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: inventory
+          schema:
+            $ref: '#/definitions/domain.Inventory'
+        "401":
+          description: invalid token claims
+          schema:
+            type: string
+        "404":
+          description: inventory not found
+          schema:
+            type: string
+        "500":
+          description: 服务器错误
+          schema:
+            type: string
+      summary: GetInventory 获取库存
+  /api/v1/inventory/create:
+    put:
+      consumes:
+      - application/json
+      description: 创建库存
+      parameters:
+      - description: inventory
+        in: body
+        name: inventory
+        required: true
+        schema:
+          $ref: '#/definitions/handler.InventoryCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: inventory created successfully
+          schema:
+            type: string
+        "401":
+          description: invalid token claims
+          schema:
+            type: string
+        "500":
+          description: 服务器错误
+          schema:
+            type: string
+      summary: 创建库存
+  /api/v1/inventory/search/{MerchantID}:
+    get:
+      consumes:
+      - application/json
+      description: 获取库存
+      parameters:
+      - description: inventory id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: inventory 数组
+          schema:
+            items:
+              $ref: '#/definitions/domain.Inventory'
+            type: array
+        "401":
+          description: invalid token claims
+          schema:
+            type: string
+        "404":
+          description: inventory not found
+          schema:
+            type: string
+        "500":
+          description: 服务器错误
+          schema:
+            type: string
+      summary: GetInventoryByMerchant 获取库存
+  /api/v1/inventory/update:
+    patch:
+      consumes:
+      - application/json
+      description: 更新库存
+      parameters:
+      - description: inventory
+        in: body
+        name: inventory
+        required: true
+        schema:
+          $ref: '#/definitions/handler.InventoryCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: inventory created successfully
+          schema:
+            type: string
+        "401":
+          description: invalid token claims
+          schema:
+            type: string
+        "500":
+          description: 服务器错误
+          schema:
+            type: string
+      summary: 更新库存
+  /api/v1/merchants/delete:
+    delete:
+      consumes:
+      - application/json
+      description: 删除商家
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: merchant deleted successfully
+          schema:
+            type: string
+        "401":
+          description: unauthorized
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      summary: 删除商家
+      tags:
+      - merchant
+  /api/v1/merchants/getMerchant/{merchantID}:
+    get:
+      consumes:
+      - application/json
+      description: 根据商户 ID 获取商户信息, 返回商户信息
+      parameters:
+      - description: Merchant ID
+        in: path
+        minimum: 1
+        name: merchantID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Merchant details retrieved successfully
+          schema:
+            $ref: '#/definitions/domain.Merchant'
+        "400":
+          description: Invalid merchant ID
+          schema:
+            $ref: '#/definitions/handler.MerchantRegisterResponse'
+        "404":
+          description: Merchant not found
+          schema:
+            $ref: '#/definitions/handler.MerchantRegisterResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.MerchantRegisterResponse'
+      summary: 根据商户 ID 获取商户信息
+      tags:
+      - merchant
+  /api/v1/merchants/register:
+    post:
+      consumes:
+      - application/json
+      description: 注册商家
+      parameters:
+      - description: Merchant registration information
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.MerchantRegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Successfully registered merchant
+          schema:
+            $ref: '#/definitions/handler.MerchantRegisterResponse'
+        "400":
+          description: Invalid request parameters
+          schema:
+            $ref: '#/definitions/handler.MerchantRegisterResponse'
+        "409":
+          description: Email or phone already registered
+          schema:
+            $ref: '#/definitions/handler.MerchantRegisterResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.MerchantRegisterResponse'
+      summary: 注册商家
+      tags:
+      - merchant
+  /api/v1/merchants/search/{merchant_name}:
+    get:
+      consumes:
+      - application/json
+      description: 根据商家名称搜索商家, 返回匹配的商家列表
+      parameters:
+      - description: Merchant name to search for (minimum 2 characters)
+        in: query
+        minLength: 2
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of merchants matching the search criteria
+          schema:
+            items:
+              $ref: '#/definitions/domain.Merchant'
+            type: array
+        "204":
+          description: No merchants found
+          schema:
+            $ref: '#/definitions/handler.MerchantRegisterResponse'
+        "400":
+          description: Invalid merchant name
+          schema:
+            $ref: '#/definitions/handler.MerchantRegisterResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.MerchantRegisterResponse'
+      summary: 根据商家名称搜索商家
+      tags:
+      - merchant
+  /api/v1/merchants/update:
+    patch:
+      consumes:
+      - application/json
+      description: 修改商家信息
+      parameters:
+      - description: Merchant update request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.MerchantUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: merchant updated successfully
+          schema:
+            type: string
+        "400":
+          description: invalid request
+          schema:
+            type: string
+        "401":
+          description: unauthorized
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      summary: 修改商家信息
+      tags:
+      - merchant
+  /api/v1/order/create:
+    post:
+      consumes:
+      - application/json
+      description: 创建订单
+      parameters:
+      - description: order
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/handler.CreateOrderRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.CreateOrderResponse'
+        "401":
+          description: invalid token claims
+          schema:
+            type: string
+        "500":
+          description: 服务器错误
+          schema:
+            type: string
+      summary: CreateOrder 创建订单
+      tags:
+      - 订单
+  /api/v1/order/get:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 订单ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.OrderGetResponse'
+        "401":
+          description: invalid token claims
+          schema:
+            type: string
+        "500":
+          description: 服务器错误
+          schema:
+            type: string
+      summary: 获取订单
+      tags:
+      - 订单
+  /api/v1/products/create:
+    put:
+      consumes:
+      - application/json
+      description: 创建商品
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: product
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/handler.ProductCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.ProductCreateResponse'
+        "401":
+          description: invalid token claims
+          schema:
+            type: string
+        "500":
+          description: 服务器错误
+          schema:
+            type: string
+      summary: Create 创建商品
+  /api/v1/products/getProduct/:id:
+    get:
+      consumes:
+      - application/json
+      description: 获取商品
+      parameters:
+      - description: 商品ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: product get successfully
+          schema:
+            $ref: '#/definitions/domain.Product'
+        "401":
+          description: invalid token claims
+          schema:
+            type: string
+        "500":
+          description: 服务器错误
+          schema:
+            type: string
+      summary: GetProduct 获取商品
+      tags:
+      - 商品
+  /api/v1/products/search:
+    post:
+      consumes:
+      - application/json
+      description: 搜索商品
+      parameters:
+      - description: product
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/handler.SearchProductRequest'
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: product updated successfully
+          schema:
+            items:
+              $ref: '#/definitions/domain.Product'
+            type: array
+        "401":
+          description: 没有权限
+          schema:
+            type: string
+        "500":
+          description: 服务器错误
+          schema:
+            type: string
+      summary: SearchProduct 搜索商品
+      tags:
+      - 商品
+  /api/v1/products/search/:MerchantID:
+    get:
+      consumes:
+      - application/json
+      description: 通过商家获取商品
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: product
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/handler.ProductCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: product get successfully
+          schema:
+            $ref: '#/definitions/domain.Product'
+        "401":
+          description: invalid token claims
+          schema:
+            type: string
+        "500":
+          description: 服务器错误
+          schema:
+            type: string
+      summary: GetProductByMerchant 通过商家获取商品
+  /api/v1/products/update:
+    patch:
+      consumes:
+      - application/json
+      description: 更新商品
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: product
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/handler.ProductUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: product updated successfully
+          schema:
+            type: string
+        "401":
+          description: 没有权限
+          schema:
+            type: string
+        "500":
+          description: 服务器错误
+          schema:
+            type: string
+      summary: Update 更新商品
+  /api/v1/sendVerifyCodeByEmail:
+    post:
+      consumes:
+      - application/json
+      description: 发送邮箱验证码
+      parameters:
+      - description: Mail request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.MailRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: 发送邮箱验证码
+  /api/v1/user/delete:
+    delete:
+      consumes:
+      - application/json
+      description: 删除当前登录用户的账户
+      parameters:
+      - description: Delete request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.DeleteRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: user deleted successfully
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ResponseError'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete user
+      tags:
+      - 用户
+  /api/v1/user/forgetPassword:
+    patch:
+      consumes:
+      - application/json
+      description: 用户忘记密码, 重置密码接口
+      parameters:
+      - description: Forget password request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.ForgetPasswordRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: password updated successfully
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ResponseError'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ResponseError'
+      summary: 忘记密码
+      tags:
+      - 用户
+  /api/v1/user/get:
+    get:
+      consumes:
+      - application/json
+      description: 获取用户信息
+      parameters:
+      - description: User ID
+        in: path
+        name: userID
+        required: true
+        type: integer
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功返回用户信息
+          schema:
+            $ref: '#/definitions/domain.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ResponseError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.ResponseError'
+      summary: GetUser
+      tags:
+      - 用户
+  /api/v1/user/login:
+    post:
+      consumes:
+      - application/json
+      description: 用户通过 email 或 userID 登录
+      parameters:
+      - description: Login request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.LoginResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ResponseError'
+      summary: 用户登录
+      tags:
+      - 用户
+  /api/v1/user/register:
+    put:
+      consumes:
+      - application/json
+      description: 用户注册
+      parameters:
+      - description: Register request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.UserRegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/handler.LoginResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ResponseError'
+      summary: 用户注册接口
+      tags:
+      - 用户
+  /api/v1/user/update:
+    patch:
+      consumes:
+      - application/json
+      description: 更新用户信息
+      parameters:
+      - description: Update user request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.UpdateRequest'
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: user updated successfully
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ResponseError'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ResponseError'
+      security:
+      - ApiKeyAuth: []
+      summary: Update user
+      tags:
+      - 用户
+  /api/v1/user/update/password:
+    patch:
+      consumes:
+      - application/json
+      description: 修改用户密码
+      parameters:
+      - description: Update password request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.UpdatePasswordRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: password updated successfully
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ResponseError'
+      security:
+      - ApiKeyAuth: []
+      summary: 修改密码
+      tags:
+      - 用户
+securityDefinitions:
+  ApiKeyAuth:
+    description: 输入 JWT token，格式为：Bearer <token>
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
