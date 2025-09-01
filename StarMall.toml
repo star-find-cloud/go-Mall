@@ -1,0 +1,139 @@
+[app]
+name = 'star-mall'
+port = 8080
+env = 'dev'
+debug = true
+varsion = 'v0.1'
+sessionon = true
+sessiongcmaxlife_time = 3600
+session_name = 'star-mall'
+jwt_secret = "Star-Mall"
+image_dir = "/var/star-mall/images/"
+node_id = 1001
+# uid 每次生成数量, 根据自己需求填写, 安全阈值 4096
+uid_count = 2048
+
+[database]
+[database.mysql]
+master_host = '172.20.10.71'
+master_port = 13306
+user = 'dg'
+password = '123456'
+max_open_conns = 100
+max_idle_conns = 20
+timeout = 10
+
+
+[database.redis]
+master_host = '172.20.20.74'
+master_port = "6379"
+password = '123456'
+database = 0
+pool_size = 100
+dial_timeout = 10
+write_timeout = 10
+read_timeout = 10
+max_idle_conns = 10
+max_active_conns = 10
+
+[[database.redis.slaves]]
+host = '172.20.20.75'
+port = "26379"
+
+[[database.redis.slaves]]
+host = '172.20.20.76'
+port = "36379"
+
+[mail]
+user = "star-find-cloud@foxmail.com"
+SMTP-code = "fsjrvxgzxyoqddhf"
+host = "smtp.qq.com"
+port = 465
+from = "star-find-cloud@foxmail.com"
+
+[cookie]
+name = "star-mall"
+domain = "StarMall.com"
+path = "/"
+maxAge = 3600
+secure = false
+httpOnly = true
+sameSite = "Strict"
+
+[log]
+version = "v0.1"
+level = "dev"
+path = "E:/var/log/star-Mall/"
+max_size = 100
+max_backup = 5
+max_age = 30
+compress = false
+
+[etcd]
+endpoints = ["172.20.20.81:2379", "172.20.20.82:2379", "172.20.20.83:2379"]
+# username = "root"
+# password = "123456"
+dial_timeout = "5s"
+auto_sync_interval = "5m"
+max_call_send_msg_size = 52428800
+max_call_recv_msg_size = 52428800
+enable_tls = false
+
+[tls]
+[tls.server]
+cert_file = "E:/var/certs/server.crt"
+key_file = "E:/var/certs/server.key"
+# 认证策略枚举值
+# 0: 不要求客户端提供证书，完全忽略客户端身份验证。
+# 1: 请求客户端提供证书，但即使未提供或验证失败，仍会继续建立连接。
+# 2: 强制要求客户端提供证书，但不验证证书的合法性（如签名是否有效）
+# 3: 如果客户端提供了证书，则严格验证证书有效性；未提供则允许连接。
+client_auth = 0
+min_version = "TLSv1.2"
+#pfx_file = "E:/var/certs/server.pfx"
+#pfx_password = "123456"
+
+[tls.client]
+ca_cert_file = "E:/var/certs/server.crt"
+
+[tls.cipher_suites]
+suites = ["TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384", "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384"]
+
+[tls.advanced]
+session_tickets = true
+curve_preferences = ["X25519", "P256"]
+
+[oss]
+enable = true
+
+[oos.TencentCOS]
+bucket = "star-mall-1322491381"
+region = "ap-chengdu"
+#secret_id = "your_secret_id"
+#secret_key = "your_secret_key"
+
+[oss.AliCloudOOS]
+bucket = "yourBucketName"
+endpoint = "yourEndpoint"
+#access_key_id = "yourAccessKeyId"
+#access_key_secret = "yourAccessKeySecret"
+
+[oos.AmazonS3]
+bucket = "your-bucket-name"
+region = "your region"
+#access_key_id = "your access_key_id"
+#secret_access_key = "your secret_access_key"
+
+[AI]
+[AI.DeepSeek]
+api_key = "sk-f8fc270b0fa9426dac7d55f19087ca25"
+
+[AI.TencentHunyuan]
+api_key = "your api_key"
+
+[MQ]
+[MQ.RocketMQ]
+nameServer = "172.20.1.11:9876;172.20.1.12:9876;172.20.1.13:9876"
+topic = "Test"
+producerGroup = "ProducerGroup"
+consumerGroup = "ConsumerGroup"

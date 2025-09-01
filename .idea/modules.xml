@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/StarMall.iml" filepath="$PROJECT_DIR$/.idea/StarMall.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../gogo/.idea/gogo.iml" filepath="$PROJECT_DIR$/../gogo/.idea/gogo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../k8s-yaml/.idea/k8s-yaml.iml" filepath="$PROJECT_DIR$/../k8s-yaml/.idea/k8s-yaml.iml" />
+      <module fileurl="file:///var/log/star-Mall/.idea/star-Mall.iml" filepath="/var/log/star-Mall/.idea/star-Mall.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../var/.idea/var.iml" filepath="$PROJECT_DIR$/../var/.idea/var.iml" />
+      <module fileurl="file:///var/star-mall/www/.idea/www.iml" filepath="/var/star-mall/www/.idea/www.iml" />
+    </modules>
+  </component>
+</project>

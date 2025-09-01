@@ -1,0 +1,67 @@
+syntax = "proto3";
+package image;
+option go_package = "./pb";
+
+// ImageService 定义图像上传/下载服务
+service ImageService {
+  // GetImageInfo 获取图片元数据
+  rpc GetImageInfo(ImageRequest) returns (ImageProto);
+
+  // UploadImage 支持客户端流式上传（大文件分片）
+  rpc UploadImage(stream ImageChunk) returns (UploadResponse);
+
+  // DownloadImage 支持服务端流式下载（断点续传）
+  rpc DownloadImage(ImageRequest) returns (stream ImageChunk);
+}
+
+
+// ImageRequest 请求参数
+message ImageRequest {
+  int64 image_id = 1;  // 唯一标识符
+  int64 owner_type = 2;
+  int64 owner_id = 3;
+}
+
+message ImageProto {
+  int64 image_id = 1;
+  int64 owner_type = 2;
+  int64 owner_id = 3;
+  string sha256_hash = 4;
+  bool is_compressed = 5;
+  bytes data = 6;  // 图片二进制数据
+  string content_type = 7;  // 图片MIME类型，如 image/jpeg
+}
+
+message ImagesProto {
+  repeated ImageProto images = 1;
+}
+
+message UploadResponse {
+  int64 image_id = 1;  // 上传成功后的图片ID
+  string sha256_hash = 2;
+  uint32 chunk_count = 3; // 总分片数
+  uint32 success_count = 4; // 成功分片数
+}
+
+// 流式传输协议
+message ImageChunk {
+  bytes content = 1;
+  string image_id = 2;
+  uint32 seq = 3;
+  string sha256_chunk = 4;
+}
+
+// 错误响应
+message ErrorResponse {
+  ErrorCode code = 1;
+  string message = 2;
+}
+
+// 错误码规范
+enum ErrorCode {
+  UNKNOWN = 0;
+  INVALID_CHUNK = 1;
+  UPLOAD_TIMEOUT = 2;
+  COS_CONNECTION_ERROR = 3;
+  COMPRESSION_FAILED = 4;
+}

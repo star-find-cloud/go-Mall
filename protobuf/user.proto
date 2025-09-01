@@ -1,0 +1,21 @@
+syntax = "proto3";
+package user;
+option go_package = "github.com/star-find-cloud/star-mall/pkg/pb/user";
+
+//service UserService {
+//  rpc GetUserInfo(User) returns ();
+//}
+
+message User {
+  int64 id = 1;
+  string name = 2;
+  string password = 3;
+  string email = 4;
+  string phone = 5;
+  int64 create_time = 6;
+  int64 update_time = 7;
+  int64 status = 8;
+  string lastIP = 9;
+  string image = 10;
+  bool is_vip = 11;
+}
